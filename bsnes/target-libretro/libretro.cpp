@@ -1024,40 +1024,61 @@ unsigned retro_get_region()
 }
 
 void* retro_get_memory_data(unsigned id) {
-    program->save();
+	program->save();
 
-    FILE* file = fopen(program->save_path, "rb");
-    if (!file) {
-        return NULL;
-    }
+	FILE* file = fopen(program->save_path, "rb");
+	if (!file) {
+		return NULL;
+	}
 
-    fseek(file, 0, SEEK_END);
-    long size = ftell(file);
-    fseek(file, 0, SEEK_SET);
+	fseek(file, 0, SEEK_END);
+	long size = ftell(file);
+	fseek(file, 0, SEEK_SET);
 
-    char* buffer = (char*)malloc(size);
-    if (!buffer) {
-        fclose(file);
-        return NULL;
-    }
+	char* buffer = (char*)malloc(size);
+	if (!buffer) {
+		fclose(file);
+		return NULL;
+	}
 
-    size_t read_size = fread(buffer, 1, size, file);
-    fclose(file);
+	size_t read_size = fread(buffer, 1, size, file);
+	fclose(file);
 
-    if (read_size == size) {
-        return buffer;
-    } else {
-        free(buffer);
-        return NULL;
-    }
+	if (read_size == size) {
+		return buffer;
+	} else {
+		free(buffer);
+		return NULL;
+	}
 }
 
 size_t retro_get_memory_size(unsigned id) {
-    program->save();
+	struct stat st;
+	if (stat(program->save_path, &st) == 0) {
+		return st.st_size;
+	}
+	return 0;
+}
 
-    struct stat st;
-    if (stat(program->save_path, &st) == 0) {
-        return st.st_size;
-    }
-    return 0;
+const char* retro_store_save_path() {
+	auto suffix = Location::suffix(program->base_name);
+	auto base = Location::base(program->base_name.transform("\\", "/"));
+
+	const char *save = nullptr;
+	if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
+		program->save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".srm" };
+	else
+		program->save_path = { program->base_name.trimRight(suffix, 1L), ".srm" };
+
+	return program->save_path;
+}
+
+void retro_load_external_save(const retro_game_info *game, void* data, size_t size) {
+	program->base_name = string(game->path);
+	retro_store_save_path();
+	FILE* file = fopen(program->save_path, "wb");
+	if (file) {
+		fwrite(data, 1, size, file);
+		fclose(file);
+	}
 }
