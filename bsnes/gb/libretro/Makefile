@@ -3,10 +3,6 @@ AR             := ar
 
 CFLAGS := -Wall $(CFLAGS)
 
-GIT_VERSION ?= " $(shell git rev-parse --short HEAD || echo unknown)"
-ifneq ($(GIT_VERSION)," unknown")
-   CFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
-endif
 
 SPACE :=
 SPACE := $(SPACE) $(SPACE)
