@@ -1,7 +1,7 @@
 STATIC_LINKING := 0
 AR             := ar
 
-CFLAGS := -Wall $(CFLAGS)
+CFLAGS := -Wall -Wno-error=implicit-function-declaration $(CFLAGS)
 
 
 SPACE :=
