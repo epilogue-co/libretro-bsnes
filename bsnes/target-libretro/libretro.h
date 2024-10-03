@@ -1767,6 +1767,11 @@ enum retro_mod
                                             * (see enum retro_savestate_context)
                                             */
 
+#define RETRO_ENVIRONMENT_SET_SAVE_UPDATED_CALLBACK (880 | RETRO_ENVIRONMENT_EXPERIMENTAL)
+                                           /* const struct retro_save_updated_callback * --
+                                            * Lets the frontend know when the core has updated the save.
+                                            */
+
 /* VFS functionality */
 
 /* File paths:
@@ -2617,6 +2622,13 @@ typedef bool (RETRO_CALLCONV *retro_set_rumble_state_t)(unsigned port,
 struct retro_rumble_interface
 {
    retro_set_rumble_state_t set_rumble_state;
+};
+
+/* Notifies libretro that the save has been updated. */
+typedef void (RETRO_CALLCONV *retro_save_updated_callback_t)();
+
+struct retro_save_updated_callback {
+  retro_save_updated_callback_t callback;
 };
 
 /* Notifies libretro that audio data should be written. */
@@ -3931,6 +3943,7 @@ RETRO_API void *retro_get_memory_data(unsigned id);
 RETRO_API size_t retro_get_memory_size(unsigned id);
 RETRO_API const char* retro_store_save_path(void);
 RETRO_API void retro_load_external_save(const retro_game_info *game, void* data, size_t size);
+RETRO_API bool retro_has_save_changed(void);
 
 #ifdef __cplusplus
 }

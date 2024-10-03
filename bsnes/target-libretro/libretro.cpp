@@ -1,4 +1,5 @@
 #include <cassert>
+#include <chrono> 
 #include "libretro.h"
 #include "libretro_core_options.h"
 #include <emulator/emulator.hpp>
@@ -12,6 +13,7 @@ retro_audio_sample_batch_t audio_batch_cb;
 retro_input_poll_t input_poll;
 retro_input_state_t input_state;
 retro_log_printf_t libretro_print;
+retro_save_updated_callback_t save_updated_cb;
 
 struct Program *program = nullptr;
 bool sgb_border_disabled = false;
@@ -37,6 +39,9 @@ void audio_queue(int16_t left, int16_t right)
 		audio_buffer_index = 0;
 	}
 }
+
+static void (*savedataUpdated)(); // callback for automatic save updates
+static int8_t auto_save_timeout = 5; // number of seconds until next automatic save check
 
 static unique_pointer<Emulator::Interface> emulator;
 
@@ -817,6 +822,14 @@ void retro_run()
 		emulator->run();
 	else
 		run_with_runahead(run_ahead_frames);
+
+	static auto last_check_time = std::chrono::steady_clock::now();
+	auto current_time = std::chrono::steady_clock::now();
+	auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_check_time).count();
+	if (elapsed_time >= auto_save_timeout) {
+		last_check_time = current_time;
+		if (retro_has_save_changed()) savedataUpdated();
+    }
 }
 
 size_t retro_serialize_size()
@@ -963,6 +976,11 @@ bool retro_load_game(const retro_game_info *game)
 
 	emulator->connect(SuperFamicom::ID::Port::Controller1, SuperFamicom::ID::Device::Gamepad);
 	emulator->connect(SuperFamicom::ID::Port::Controller2, SuperFamicom::ID::Device::Gamepad);
+
+	if (environ_cb(RETRO_ENVIRONMENT_SET_SAVE_UPDATED_CALLBACK, &save_updated_cb)) {
+		savedataUpdated = save_updated_cb;
+	}
+
 	return true;
 }
 
@@ -1081,4 +1099,30 @@ void retro_load_external_save(const retro_game_info *game, void* data, size_t si
 		fwrite(data, 1, size, file);
 		fclose(file);
 	}
+}
+
+bool retro_has_save_changed() {
+	void* current_save = retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);
+	if (!current_save) {
+		return false;
+	}
+
+	static char* previous_save = nullptr;
+	static size_t previous_size = 0;
+
+	long current_size = retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);
+	bool has_changed = true;
+	if (previous_save && previous_size == current_size) {
+		has_changed = memcmp(previous_save, current_save, current_size) != 0;
+	}
+
+	if (has_changed) {
+		free(previous_save);
+		previous_save = (char*)malloc(current_size);
+		memcpy(previous_save, current_save, current_size);
+		previous_size = current_size;
+	}
+
+	free(current_save);
+	return has_changed;
 }

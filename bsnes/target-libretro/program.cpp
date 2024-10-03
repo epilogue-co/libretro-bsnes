@@ -501,8 +501,6 @@ auto Program::openRomSuperFamicom(string name, vfs::file::mode mode) -> shared_p
 		return vfs::fs::file::open({Location::notsuffix(superFamicom.location), name}, mode);
 	}
 	else if (name == "save.ram") {
-		string save_path;
-
 		auto suffix = Location::suffix(base_name);
 		auto base = Location::base(base_name.transform("\\", "/"));
 
