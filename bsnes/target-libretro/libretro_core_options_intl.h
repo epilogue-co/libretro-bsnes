@@ -9026,7 +9026,7 @@ struct retro_core_options_v2 options_da = {
 #define BSNES_ASPECT_RATIO_LABEL_DE "Bevorzugtes Seitenverhältnis"
 #define BSNES_ASPECT_RATIO_INFO_0_DE "Das bevorzugte Seitenverhältnis des Inhalts auswählen. Dies wird nur angewendet, wenn das Seitenverhältnis von RetroArch in den Videoeinstellungen auf \"Wie von Core vorgesehen\" eingestellt ist."
 #define OPTION_VAL_AUTO_DE "Automatisch"
-#define OPTION_VAL_1_1_DE "1:1 PAR (Pixelgetreu)"
+#define OPTION_VAL_1_1_DE "1:1 PAR (Pixel Perfekt)"
 #define OPTION_VAL_4_3_DE NULL
 #define OPTION_VAL_NTSC_DE NULL
 #define OPTION_VAL_PAL_DE NULL
@@ -18893,16 +18893,16 @@ struct retro_core_options_v2 options_hr = {
 #define BSNES_ASPECT_RATIO_LABEL_HU "Kívánt képarány"
 #define BSNES_ASPECT_RATIO_INFO_0_HU "A tartalom kívánt képaránya. Csak akkor lép életbe, ha a RetroArch saját képarány beállítása \"Mag által meghatározott\" értékre van állítva a kép beállításainál."
 #define OPTION_VAL_AUTO_HU "Automatikus"
-#define OPTION_VAL_1_1_HU NULL
-#define OPTION_VAL_4_3_HU NULL
+#define OPTION_VAL_1_1_HU "1:1 pixelarány (pixelpontos)"
+#define OPTION_VAL_4_3_HU "4:3 kijelzőarány"
 #define OPTION_VAL_NTSC_HU NULL
 #define OPTION_VAL_PAL_HU NULL
 #define BSNES_PPU_OVERSCAN_V_LABEL_HU "Függőleges overscan levágása"
-#define BSNES_PPU_OVERSCAN_V_INFO_0_HU NULL
-#define OPTION_VAL_0_HU NULL
-#define OPTION_VAL_8_HU NULL
-#define OPTION_VAL_12_HU NULL
-#define OPTION_VAL_16_HU NULL
+#define BSNES_PPU_OVERSCAN_V_INFO_0_HU "N sor levágása a képernyő aljáról és tetejéről, az SNES korabeli televíziók kávájának szimulálásához."
+#define OPTION_VAL_0_HU "0 sor"
+#define OPTION_VAL_8_HU "8 sor"
+#define OPTION_VAL_12_HU "12 sor"
+#define OPTION_VAL_16_HU "16 sor"
 #define BSNES_BLUR_EMULATION_LABEL_HU "Elmosás emulálása"
 #define BSNES_BLUR_EMULATION_INFO_0_HU "Az SDTV korlátozott vízszintes felbontásának szimulálása a vízszintesen szomszédos képpontok összemosásával. Néhány játék hagyatkozik erre átlátszósági effektek céljából."
 #define BSNES_VIDEO_FILTER_LABEL_HU "Szűrő"
@@ -19074,7 +19074,7 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_SGB1_SFC_HU NULL
 #define OPTION_VAL_SGB2_SFC_HU NULL
 #define BSNES_HIDE_SGB_BORDER_LABEL_HU "SGB keret elrejtése"
-#define BSNES_HIDE_SGB_BORDER_INFO_0_HU NULL
+#define BSNES_HIDE_SGB_BORDER_INFO_0_HU "A keret elrejtése Super Game Boy játékok esetén."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_HU "Érintőképernyős fénypisztoly"
 #define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_HU "A Super Scope bemenet engedélyezése érintőképernyős eszközökön."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_HU "Super Scope ravaszgombok megfordítása"
@@ -27073,7 +27073,7 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_HIGH_PT_BR "Alta"
 #define BSNES_CPU_FASTMATH_LABEL_PT_BR "Acelerar matemática da CPU"
 #define BSNES_CPU_FASTMATH_INFO_0_PT_BR "Proporciona resultados de computação de imediato. A multiplicação e a divisão pela CPU leva tempo para ser completada em um SNES real. Os emuladores mais antigos não simulavam estes atrasos e, portanto, alguns hacks mais antigos de ROMs não esperam por operações matemáticas para completar e precisam deste hack."
-#define BSNES_CPU_OVERCLOCK_LABEL_PT_BR NULL
+#define BSNES_CPU_OVERCLOCK_LABEL_PT_BR "Overclock (CPU)"
 #define BSNES_CPU_OVERCLOCK_LABEL_CAT_PT_BR NULL
 #define BSNES_CPU_OVERCLOCK_INFO_0_PT_BR "Faça o overclock ou o downclock da CPU. A definição deste valor acima de 100% pode reduzir os tempos de carregamento e remover a lentidão. Use com cautela, pois também pode causar o travamento de alguns jogos ou apresentar outros problemas."
 #define OPTION_VAL_210_PT_BR NULL
@@ -27096,10 +27096,10 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_380_PT_BR NULL
 #define OPTION_VAL_390_PT_BR NULL
 #define OPTION_VAL_400_PT_BR NULL
-#define BSNES_CPU_SA1_OVERCLOCK_LABEL_PT_BR "Overclock do coprocessador SA-1"
+#define BSNES_CPU_SA1_OVERCLOCK_LABEL_PT_BR "Overclock (coprocessador SA-1)"
 #define BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_PT_BR "Coprocessador SA-1"
 #define BSNES_CPU_SA1_OVERCLOCK_INFO_0_PT_BR "Faça o overclock ou o downclock do chip do 'Super Accelerator 1' (SA-1). A definição deste valor acima de 100% pode melhorar o desempenho em jogos que suportam o chip SA-1. Use com cautela, pois pode também causar o travamento de alguns jogos ou apresentar outros problemas."
-#define BSNES_CPU_SFX_OVERCLOCK_LABEL_PT_BR "Overclock do coprocessador SuperFX"
+#define BSNES_CPU_SFX_OVERCLOCK_LABEL_PT_BR "Overclock (coprocessador SuperFX)"
 #define BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_PT_BR "Coprocessador Super FX"
 #define BSNES_CPU_SFX_OVERCLOCK_INFO_0_PT_BR "Faça o overclock ou o downclock do coprocessador SuperFX. A definição deste valor acima de 100% pode melhorar o desempenho em jogos que suportam o SuperFX. Use com cautela, pois pode também causar o travamento de alguns jogos ou apresentar outros problemas."
 #define OPTION_VAL_410_PT_BR NULL
@@ -27142,12 +27142,12 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_780_PT_BR NULL
 #define OPTION_VAL_790_PT_BR NULL
 #define OPTION_VAL_800_PT_BR NULL
-#define BSNES_SGB_BIOS_LABEL_PT_BR "BIOS preferida do Super Game Boy (requer reinício)"
-#define BSNES_SGB_BIOS_INFO_0_PT_BR "Escolha a BIOS preferida do Super Game Boy para ser usada com títulos compatíveis."
+#define BSNES_SGB_BIOS_LABEL_PT_BR "BIOS do Super Game Boy (requer reinício)"
+#define BSNES_SGB_BIOS_INFO_0_PT_BR "Define a BIOS de Super Game Boy que será usada nos jogos compatíveis."
 #define OPTION_VAL_SGB1_SFC_PT_BR NULL
 #define OPTION_VAL_SGB2_SFC_PT_BR NULL
 #define BSNES_HIDE_SGB_BORDER_LABEL_PT_BR "Ocultar bordas"
-#define BSNES_HIDE_SGB_BORDER_INFO_0_PT_BR NULL
+#define BSNES_HIDE_SGB_BORDER_INFO_0_PT_BR "Oculta as bordas em jogos de Super Game Boy."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_PT_BR "Tela sensível ao toque"
 #define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_PT_BR "Ativa a entrada do Super Scope em dispositivos com tela sensível ao toque."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_PT_BR "Inverter botões do Super Scope"
@@ -31499,8 +31499,8 @@ struct retro_core_options_v2 options_sr = {
 #define BSNES_VIDEO_GAMMA_INFO_0_SV "Justera gamma"
 #define OPTION_VAL_100_O6_SV NULL
 #define OPTION_VAL_150_O6_SV "150% (standard)"
-#define BSNES_PPU_FAST_LABEL_SV NULL
-#define BSNES_PPU_FAST_LABEL_CAT_SV NULL
+#define BSNES_PPU_FAST_LABEL_SV "PPU (Video) - Snabbt läge"
+#define BSNES_PPU_FAST_LABEL_CAT_SV "PPU - Snabbt läge"
 #define BSNES_PPU_FAST_INFO_0_SV "Möjliggör snabbare emulering av PPU till bekostnad av en mindre minskning av noggrannheten. Rekommenderas att låta detta vara kvar som aktiv. OBS: Detta måste vara aktiverat för att alternativen 'Deinterlace', 'Ingen blockfigursgräns' och 'HD-läge 7' ska fungera."
 #define BSNES_PPU_DEINTERLACE_LABEL_SV NULL
 #define BSNES_PPU_DEINTERLACE_LABEL_CAT_SV NULL
@@ -31510,7 +31510,7 @@ struct retro_core_options_v2 options_sr = {
 #define BSNES_PPU_NO_SPRITE_LIMIT_INFO_0_SV "Ta bort alla begränsningar för antalet blockfigurer som kan ritas samtidigt på skärmen. Kan orsaka problem med vissa spel."
 #define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_SV NULL
 #define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_CAT_SV NULL
-#define BSNES_PPU_NO_VRAM_BLOCKING_INFO_0_SV NULL
+#define BSNES_PPU_NO_VRAM_BLOCKING_INFO_0_SV "Emulerar ett fel i äldre versioner av ZSNES och Snes9x, där VRAM-blockering inte emulerades. Några äldre ROM-hack förlitade sig på detta beteende och kommer att rendera grafik felaktigt om detta inte är aktiverat. Det här alternativet är extremt felaktigt och skadar PPU-hastigheten, så det rekommenderas att du låter det vara avaktiverat om du inte behöver spela ett spel som annars är inkompatibelt med den här kärnan."
 #define BSNES_DSP_FAST_LABEL_SV "DSP (ljud) - Snabbt läge"
 #define BSNES_DSP_FAST_LABEL_CAT_SV "DSP - Snabbt läge"
 #define BSNES_DSP_FAST_INFO_0_SV NULL
@@ -31519,7 +31519,7 @@ struct retro_core_options_v2 options_sr = {
 #define BSNES_DSP_CUBIC_INFO_0_SV NULL
 #define BSNES_DSP_ECHO_SHADOW_LABEL_SV NULL
 #define BSNES_DSP_ECHO_SHADOW_LABEL_CAT_SV NULL
-#define BSNES_DSP_ECHO_SHADOW_INFO_0_SV NULL
+#define BSNES_DSP_ECHO_SHADOW_INFO_0_SV "Emulerar en bugg i ZSNES där echo RAM behandlades som separat från APU RAM. Många äldre ROM-hack för Super Mario World förlitade sig på detta beteende och kommer att krascha utan detta. Det här alternativet är extremt felaktigt och bör inte aktiveras om det inte behövs."
 #define BSNES_MODE7_SCALE_LABEL_SV NULL
 #define BSNES_MODE7_SCALE_LABEL_CAT_SV "Skala"
 #define BSNES_MODE7_SCALE_INFO_0_SV NULL
@@ -31542,25 +31542,25 @@ struct retro_core_options_v2 options_sr = {
 #define BSNES_MODE7_MOSAIC_INFO_0_SV NULL
 #define BSNES_RUN_AHEAD_FRAMES_LABEL_SV NULL
 #define BSNES_RUN_AHEAD_FRAMES_INFO_0_SV NULL
-#define OPTION_VAL_1_SV NULL
-#define OPTION_VAL_2_SV NULL
-#define OPTION_VAL_3_SV NULL
-#define OPTION_VAL_4_SV NULL
+#define OPTION_VAL_1_SV "1 bildruta"
+#define OPTION_VAL_2_SV "2 bildrutor"
+#define OPTION_VAL_3_SV "3 bildrutor"
+#define OPTION_VAL_4_SV "4 bildrutor"
 #define BSNES_COPROCESSOR_DELAYED_SYNC_LABEL_SV NULL
 #define BSNES_COPROCESSOR_DELAYED_SYNC_INFO_0_SV NULL
 #define BSNES_COPROCESSOR_PREFER_HLE_LABEL_SV NULL
 #define BSNES_COPROCESSOR_PREFER_HLE_INFO_0_SV NULL
-#define BSNES_HOTFIXES_LABEL_SV NULL
+#define BSNES_HOTFIXES_LABEL_SV "Snabbfixar"
 #define BSNES_HOTFIXES_INFO_0_SV NULL
 #define BSNES_ENTROPY_LABEL_SV NULL
-#define BSNES_ENTROPY_INFO_0_SV NULL
+#define BSNES_ENTROPY_INFO_0_SV "Välj graden av randomisering av minnet och registren. Om inställningen är None initialiseras alla minnen och register till konstanta värden vid start. Låg randomisering ger den mest exakta representationen av ett verkligt system. High slumpas så mycket som möjligt."
 #define OPTION_VAL_LOW_SV "Låg"
 #define OPTION_VAL_HIGH_SV "Hög"
 #define BSNES_CPU_FASTMATH_LABEL_SV NULL
-#define BSNES_CPU_FASTMATH_INFO_0_SV NULL
-#define BSNES_CPU_OVERCLOCK_LABEL_SV NULL
+#define BSNES_CPU_FASTMATH_INFO_0_SV "Ge beräkningsresultat omedelbart. CPU-multiplikation och -division tar tid att slutföra på en riktig SNES. Äldre emulatorer simulerade inte dessa fördröjningar och därför väntar vissa äldre ROM-hack inte på att matematiska operationer ska slutföras och behöver detta hack."
+#define BSNES_CPU_OVERCLOCK_LABEL_SV "Överklockning - CPU"
 #define BSNES_CPU_OVERCLOCK_LABEL_CAT_SV NULL
-#define BSNES_CPU_OVERCLOCK_INFO_0_SV NULL
+#define BSNES_CPU_OVERCLOCK_INFO_0_SV "Överklockning eller nerklockning av CPUn. Inställning av värdet över 100% kan minska inläsningstider och ta bort långsamheter. Använd med försiktighet eftersom det kan orsaka att spel kraschar eller upplever andra problem."
 #define OPTION_VAL_210_SV NULL
 #define OPTION_VAL_220_SV NULL
 #define OPTION_VAL_230_SV NULL
@@ -31583,10 +31583,10 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_400_SV NULL
 #define BSNES_CPU_SA1_OVERCLOCK_LABEL_SV NULL
 #define BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_SV NULL
-#define BSNES_CPU_SA1_OVERCLOCK_INFO_0_SV NULL
+#define BSNES_CPU_SA1_OVERCLOCK_INFO_0_SV "Överklocka eller nedklocka Super Accelerator 1 (SA-1)-chipet. Om du ställer in det här värdet på över 100 % kan det förbättra prestandan i spel som stöder SA-1-chippet. Använd det med försiktighet, eftersom det också kan leda till att vissa spel kraschar eller uppvisar andra problem."
 #define BSNES_CPU_SFX_OVERCLOCK_LABEL_SV NULL
 #define BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_SV NULL
-#define BSNES_CPU_SFX_OVERCLOCK_INFO_0_SV NULL
+#define BSNES_CPU_SFX_OVERCLOCK_INFO_0_SV "Överklocka eller nedklocka SuperFX coprocessor. Om du ställer in det här värdet på över 100% kan det förbättra prestandan i spel som stöder SuperFX. Använd det med försiktighet, eftersom det också kan leda till att vissa spel kraschar eller uppvisar andra problem."
 #define OPTION_VAL_410_SV NULL
 #define OPTION_VAL_420_SV NULL
 #define OPTION_VAL_430_SV NULL
