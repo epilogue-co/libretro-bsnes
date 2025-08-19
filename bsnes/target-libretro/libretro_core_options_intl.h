@@ -6340,11 +6340,11 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_NTSC_CS NULL
 #define OPTION_VAL_PAL_CS NULL
 #define BSNES_PPU_OVERSCAN_V_LABEL_CS "Oříznutí Vertikálního Přesahu"
-#define BSNES_PPU_OVERSCAN_V_INFO_0_CS NULL
-#define OPTION_VAL_0_CS NULL
-#define OPTION_VAL_8_CS NULL
-#define OPTION_VAL_12_CS NULL
-#define OPTION_VAL_16_CS NULL
+#define BSNES_PPU_OVERSCAN_V_INFO_0_CS "Odstraňte čáry N z horní a dolní části obrazovky, abyste simulovali rámeček televizoru z doby SNES."
+#define OPTION_VAL_0_CS "0 řádků"
+#define OPTION_VAL_8_CS "8 řádků"
+#define OPTION_VAL_12_CS "12 řádků"
+#define OPTION_VAL_16_CS "16 řádků"
 #define BSNES_BLUR_EMULATION_LABEL_CS "Emulace Rozostření"
 #define BSNES_BLUR_EMULATION_INFO_0_CS "Simuluje omezené horizontální rozlišení televizorů SDTV rozmazáním horizontálně sousedících pixelů. Některé hry na tom závisejí, aby napodobily efekt průhlednosti."
 #define BSNES_VIDEO_FILTER_LABEL_CS "Filtr"
@@ -6354,8 +6354,8 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_NTSC_COMPOSITE_CS "NTSC (Kompozitní)"
 #define OPTION_VAL_NTSC_S_VIDEO_CS NULL
 #define OPTION_VAL_NTSC_RGB_CS NULL
-#define BSNES_VIDEO_LUMINANCE_LABEL_CS NULL
-#define BSNES_VIDEO_LUMINANCE_INFO_0_CS NULL
+#define BSNES_VIDEO_LUMINANCE_LABEL_CS "Úprava barev - Jas"
+#define BSNES_VIDEO_LUMINANCE_INFO_0_CS "Nastavení jasu"
 #define OPTION_VAL_0_O4_CS NULL
 #define OPTION_VAL_10_CS NULL
 #define OPTION_VAL_20_CS NULL
@@ -6367,8 +6367,8 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_80_CS NULL
 #define OPTION_VAL_90_CS NULL
 #define OPTION_VAL_100_CS "100% (výchozí)"
-#define BSNES_VIDEO_SATURATION_LABEL_CS NULL
-#define BSNES_VIDEO_SATURATION_INFO_0_CS NULL
+#define BSNES_VIDEO_SATURATION_LABEL_CS "Úprava barev - Sytost"
+#define BSNES_VIDEO_SATURATION_INFO_0_CS "Nastavení sytosti"
 #define OPTION_VAL_110_CS NULL
 #define OPTION_VAL_120_CS NULL
 #define OPTION_VAL_130_CS NULL
@@ -6379,10 +6379,10 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_180_CS NULL
 #define OPTION_VAL_190_CS NULL
 #define OPTION_VAL_200_CS NULL
-#define BSNES_VIDEO_GAMMA_LABEL_CS NULL
-#define BSNES_VIDEO_GAMMA_INFO_0_CS NULL
+#define BSNES_VIDEO_GAMMA_LABEL_CS "Úprava barev - Gamma"
+#define BSNES_VIDEO_GAMMA_INFO_0_CS "Nastavení gamma"
 #define OPTION_VAL_100_O6_CS NULL
-#define OPTION_VAL_150_O6_CS NULL
+#define OPTION_VAL_150_O6_CS "150 % (výchozí)"
 #define BSNES_PPU_FAST_LABEL_CS "PPU (Video) - Rychlý Režim"
 #define BSNES_PPU_FAST_LABEL_CAT_CS "PPU - Rychlý Režim"
 #define BSNES_PPU_FAST_INFO_0_CS "Umožňuje rychlejší emulaci PPU za cenu menšího snížení přesnosti. Doporučujeme ponechat tuto funkci zapnutou. POZNÁMKA: tato funkce musí být zapnutá, aby fungovaly možnosti \"Odstranění prokladu\", \"Žádný limit spritu\" a \"HD režim 7\"."
@@ -6516,7 +6516,7 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_SGB1_SFC_CS NULL
 #define OPTION_VAL_SGB2_SFC_CS NULL
 #define BSNES_HIDE_SGB_BORDER_LABEL_CS "Skrýt Hranici SGB"
-#define BSNES_HIDE_SGB_BORDER_INFO_0_CS NULL
+#define BSNES_HIDE_SGB_BORDER_INFO_0_CS "Skrýt okraj při hraní her pro Super Game Boy."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_CS "Světelná Pistole s Dotykovou Obrazovkou"
 #define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_CS "Povolit vstup Super Scope pro dotyková zařízení."
 #define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_CS "Obrácení Tlačítek Střelby Super Scope"
@@ -14429,7 +14429,7 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_NTSC_RGB_FI NULL
 #define BSNES_VIDEO_LUMINANCE_LABEL_FI NULL
 #define BSNES_VIDEO_LUMINANCE_INFO_0_FI NULL
-#define OPTION_VAL_0_O4_FI NULL
+#define OPTION_VAL_0_O4_FI "0 %"
 #define OPTION_VAL_10_FI "10 %"
 #define OPTION_VAL_20_FI "20 %"
 #define OPTION_VAL_30_FI "30 %"
@@ -16181,6 +16181,903 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
 struct retro_core_options_v2 options_fr = {
    option_cats_fr,
    option_defs_fr
+};
+
+/* RETRO_LANGUAGE_GA */
+
+#define CATEGORY_VIDEO_LABEL_GA "Físeán"
+#define CATEGORY_VIDEO_INFO_0_GA "Athraigh socruithe aschuir físe."
+#define CATEGORY_AUDIO_LABEL_GA "Fuaim"
+#define CATEGORY_AUDIO_INFO_0_GA "Athraigh socruithe aschuir fuaime."
+#define CATEGORY_MODE7_LABEL_GA "Mód HD 7"
+#define CATEGORY_MODE7_INFO_0_GA "Athraigh socruithe maidir le haithris grafaicí Mód 7."
+#define CATEGORY_HACK_LABEL_GA "Cleasanna agus Feabhsuithe Aithrise"
+#define CATEGORY_HACK_INFO_0_GA "Cuir cleasanna aithrise, feabhsuithe agus ceartúcháin the i bhfeidhm."
+#define CATEGORY_OVERCLOCK_LABEL_GA "Ró-/Síoschlogáil"
+#define CATEGORY_OVERCLOCK_INFO_0_GA "Athraigh luas na crua-earraí aithrisithe."
+#define CATEGORY_SGB_LABEL_GA NULL
+#define CATEGORY_SGB_INFO_0_GA "Athraigh socruithe maidir le haithris an Super Game Boy."
+#define CATEGORY_LIGHTGUN_LABEL_GA "Gunna Solais"
+#define CATEGORY_LIGHTGUN_INFO_0_GA "Athraigh socruithe gunna solais (scáileáin tadhaill)."
+#define BSNES_ASPECT_RATIO_LABEL_GA "Cóimheas Gné is Fearr"
+#define BSNES_ASPECT_RATIO_INFO_0_GA "Roghnaigh an cóimheas gné ábhair is fearr leat. Ní bheidh feidhm ag seo ach amháin nuair a bheidh cóimheas gné RetroArch socraithe go 'Croílár curtha ar fáil' sna socruithe Físeáin."
+#define OPTION_VAL_AUTO_GA "Uathoibríoch"
+#define OPTION_VAL_1_1_GA "PAR 1:1 (Picteil Foirfe)"
+#define OPTION_VAL_4_3_GA NULL
+#define OPTION_VAL_NTSC_GA NULL
+#define OPTION_VAL_PAL_GA NULL
+#define BSNES_PPU_OVERSCAN_V_LABEL_GA "Bearr Ró-scanadh Ingearach"
+#define BSNES_PPU_OVERSCAN_V_INFO_0_GA "Bain línte N ó bharr agus bun an scáileáin chun bezel teilifíse ó ré an SNES a insamhladh."
+#define OPTION_VAL_0_GA "0 Línte"
+#define OPTION_VAL_8_GA "8 Líne"
+#define OPTION_VAL_12_GA "12 Líne"
+#define OPTION_VAL_16_GA "16 Líne"
+#define BSNES_BLUR_EMULATION_LABEL_GA "Aithris Doiléire"
+#define BSNES_BLUR_EMULATION_INFO_0_GA "Insamhlaigh an taifeach cothrománach teoranta de theilifíseáin SD trí phicteilíní atá cóngarach go cothrománach a dhoiléiriú le chéile. Braitheann roinnt cluichí ar seo chun éifeacht trédhearcachta a aithris."
+#define BSNES_VIDEO_FILTER_LABEL_GA "Scagaire"
+#define BSNES_VIDEO_FILTER_INFO_0_GA "Roghnaigh idir gan scagadh agus scagaire NTSC blargg le roghanna do RF, Ilchodach, S-Video, nó RGB"
+#define OPTION_VAL_NONE_GA "Dada"
+#define OPTION_VAL_NTSC_RF_GA NULL
+#define OPTION_VAL_NTSC_COMPOSITE_GA "NTSC (Comhchodach)"
+#define OPTION_VAL_NTSC_S_VIDEO_GA NULL
+#define OPTION_VAL_NTSC_RGB_GA NULL
+#define BSNES_VIDEO_LUMINANCE_LABEL_GA "Coigeartú Datha - Lonrúlacht"
+#define BSNES_VIDEO_LUMINANCE_INFO_0_GA "Coigeartaigh an Lonracht"
+#define OPTION_VAL_0_O4_GA NULL
+#define OPTION_VAL_10_GA NULL
+#define OPTION_VAL_20_GA NULL
+#define OPTION_VAL_30_GA NULL
+#define OPTION_VAL_40_GA NULL
+#define OPTION_VAL_50_GA NULL
+#define OPTION_VAL_60_GA NULL
+#define OPTION_VAL_70_GA NULL
+#define OPTION_VAL_80_GA NULL
+#define OPTION_VAL_90_GA NULL
+#define OPTION_VAL_100_GA "100% (Réamhshocrú)"
+#define BSNES_VIDEO_SATURATION_LABEL_GA "Coigeartú Datha - Sáithiú"
+#define BSNES_VIDEO_SATURATION_INFO_0_GA "Coigeartaigh Sáithiú"
+#define OPTION_VAL_110_GA NULL
+#define OPTION_VAL_120_GA NULL
+#define OPTION_VAL_130_GA NULL
+#define OPTION_VAL_140_GA NULL
+#define OPTION_VAL_150_GA NULL
+#define OPTION_VAL_160_GA NULL
+#define OPTION_VAL_170_GA NULL
+#define OPTION_VAL_180_GA NULL
+#define OPTION_VAL_190_GA NULL
+#define OPTION_VAL_200_GA NULL
+#define BSNES_VIDEO_GAMMA_LABEL_GA "Coigeartú Dath - Gama"
+#define BSNES_VIDEO_GAMMA_INFO_0_GA "Coigeartaigh Gama"
+#define OPTION_VAL_100_O6_GA NULL
+#define OPTION_VAL_150_O6_GA "150% (Réamhshocrú)"
+#define BSNES_PPU_FAST_LABEL_GA "PPU (Físeán) - Mód Tapa"
+#define BSNES_PPU_FAST_LABEL_CAT_GA "PPU - Mód Tapaidh"
+#define BSNES_PPU_FAST_INFO_0_GA "Cumasaigh aithris níos tapúla ar an PPU ar chostas laghdú beag ar chruinneas. Moltar é seo a fhágáil ar siúl. TABHAIR FAOI DEARA: ní mór é seo a chumasú chun go n-oibreoidh na roghanna 'Deinterlace', 'No Sprite Limit' agus 'HD Mode 7'."
+#define BSNES_PPU_DEINTERLACE_LABEL_GA NULL
+#define BSNES_PPU_DEINTERLACE_LABEL_CAT_GA NULL
+#define BSNES_PPU_DEINTERLACE_INFO_0_GA "Dí-idircheanglaítear gach cluiche trí rindreáil inmheánach ag 480p. Is ar éigean a bhíonn aon phionós feidhmíochta ann, mar sin moltar é seo a fhágáil ar siúl."
+#define BSNES_PPU_NO_SPRITE_LIMIT_LABEL_GA "PPU (Físeán) - Gan Teorainn Sprid"
+#define BSNES_PPU_NO_SPRITE_LIMIT_LABEL_CAT_GA "PPU - Gan Teorainn Sprid"
+#define BSNES_PPU_NO_SPRITE_LIMIT_INFO_0_GA "Bain aon teorainn ar líon na sprites is féidir a tharraingt ag an am céanna ar an scáileán. D’fhéadfadh fadhbanna a bheith mar thoradh air sin le roinnt cluichí."
+#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_GA "PPU (Físeán) - Gan aon bhlocáil VRAM"
+#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_CAT_GA "PPU - Gan aon bhlocáil VRAM"
+#define BSNES_PPU_NO_VRAM_BLOCKING_INFO_0_GA "Déan aithris ar fhabht i leaganacha níos sine de ZSNES agus Snes9x, áit nach ndearnadh aithris ar bhlocáil VRAM. Bhí roinnt sean-hacaí ROM ag brath ar an iompar seo agus rindreálfaidh siad grafaicí go mícheart mura bhfuil sé seo cumasaithe. Tá an rogha seo thar a bheith míchruinn agus déanann sé dochar do luas an PPU, mar sin moltar é a fhágáil díchumasaithe mura gá duit cluiche a imirt nach bhfuil comhoiriúnach leis an gcroílár seo ar shlí eile."
+#define BSNES_DSP_FAST_LABEL_GA "DSP (Fuaim) - Mód Tapa"
+#define BSNES_DSP_FAST_LABEL_CAT_GA "DSP - Mód Tapa"
+#define BSNES_DSP_FAST_INFO_0_GA "Cumasaigh aithris níos tapúla ar an DSP ar chostas laghdú beag ar chruinneas. Moltar é seo a fhágáil ar siúl."
+#define BSNES_DSP_CUBIC_LABEL_GA "DSP (Fuaim) - Idirshuíomh Ciúbach"
+#define BSNES_DSP_CUBIC_LABEL_CAT_GA "DSP - Idirshuíomh Ciúbach"
+#define BSNES_DSP_CUBIC_INFO_0_GA "Cuir idirshuíomh ciúbach i bhfeidhm ar an fhuaim, ag caomhnú níos mó den raon ard."
+#define BSNES_DSP_ECHO_SHADOW_LABEL_GA "DSP (Fuaim) - RAM Macalla Scáth"
+#define BSNES_DSP_ECHO_SHADOW_LABEL_CAT_GA "DSP - Macalla Scáth RAM"
+#define BSNES_DSP_ECHO_SHADOW_INFO_0_GA "Déan aithris ar fhabht i ZSNES inar caitheadh ​​le RAM macalla mar rud ar leithligh ó RAM APU. Bhí go leor sean-hacaí ROM do Super Mario World ag brath ar an iompar seo agus tuairteálfaidh siad gan é seo. Tá an rogha seo thar a bheith míchruinn agus níor cheart é a chumasú mura bhfuil gá leis."
+#define BSNES_MODE7_SCALE_LABEL_GA "Mód HD 7 - Scála"
+#define BSNES_MODE7_SCALE_LABEL_CAT_GA "Scála"
+#define BSNES_MODE7_SCALE_INFO_0_GA "Méadaigh taifeach cothrománach agus ingearach na ngrafaicí Mód 7 a úsáidtear i gcluichí áirithe."
+#define OPTION_VAL_1X_GA NULL
+#define OPTION_VAL_2X_GA NULL
+#define OPTION_VAL_3X_GA NULL
+#define OPTION_VAL_4X_GA NULL
+#define OPTION_VAL_5X_GA NULL
+#define OPTION_VAL_6X_GA NULL
+#define OPTION_VAL_7X_GA NULL
+#define OPTION_VAL_8X_GA NULL
+#define BSNES_MODE7_PERSPECTIVE_LABEL_GA "Mód HD 7 - Ceartú Peirspictíochta"
+#define BSNES_MODE7_PERSPECTIVE_LABEL_CAT_GA "Ceartú Peirspictíochta"
+#define BSNES_MODE7_PERSPECTIVE_INFO_0_GA "Ceartaigh peirspictíocht na ngrafaicí Mód 7 a úsáidtear i gcluichí áirithe trí roinnt teorainneacha a bhaineann leis an matamaitic slánuimhreach a úsáideann an SNES a sheachaint."
+#define BSNES_MODE7_SUPERSAMPLE_LABEL_GA "Mód HD 7 - Supersampláil"
+#define BSNES_MODE7_SUPERSAMPLE_LABEL_CAT_GA "Super-sampláil"
+#define BSNES_MODE7_SUPERSAMPLE_INFO_0_GA "Sár-shampla de na grafaicí Mód 7 a úsáidtear i gcluichí áirithe. I dteannta fachtóirí scála Mód 7 níos airde, tá éifeacht cosúil le frith-ailiasú mar thoradh air."
+#define BSNES_MODE7_MOSAIC_LABEL_GA "Mód HD 7 - HD->SD Mósáic"
+#define BSNES_MODE7_MOSAIC_LABEL_CAT_GA "Mósáic HD->SD"
+#define BSNES_MODE7_MOSAIC_INFO_0_GA "Taispeáin éifeacht mhósáice grafaicí Mód 7 fiú agus iad á n-uas-scálú."
+#define BSNES_RUN_AHEAD_FRAMES_LABEL_GA "Rith Chun Tosaigh Inmheánach"
+#define BSNES_RUN_AHEAD_FRAMES_INFO_0_GA "Insamhlaigh an córas roimh ré agus rolladh siar chun moill ionchuir a laghdú. Tá riachtanais chórais an-ard aige."
+#define OPTION_VAL_1_GA "1 fráma"
+#define OPTION_VAL_2_GA "2 fhráma"
+#define OPTION_VAL_3_GA "3 fhráma"
+#define OPTION_VAL_4_GA "4 fhráma"
+#define BSNES_COPROCESSOR_DELAYED_SYNC_LABEL_GA "Comhphróiseálaithe - Mód Tapa"
+#define BSNES_COPROCESSOR_DELAYED_SYNC_INFO_0_GA "Cumasaigh aithris níos tapúla ar na comhphróiseálaithe ar chostas laghdú beag ar chruinneas. Moltar é seo a fhágáil ar siúl."
+#define BSNES_COPROCESSOR_PREFER_HLE_LABEL_GA "Comhphróiseálaithe - Is fearr HLE"
+#define BSNES_COPROCESSOR_PREFER_HLE_INFO_0_GA "Nuair a bhíonn an rogha seo cumasaithe, úsáidfear aithris HLE nach bhfuil chomh cruinn i gcónaí nuair a bhíonn sé ar fáil. Mura bhfuil sé cumasaithe, ní úsáidfear HLE ach amháin nuair a bhíonn dochtearraí LLE ar iarraidh."
+#define BSNES_HOTFIXES_LABEL_GA "Socruithe Te"
+#define BSNES_HOTFIXES_INFO_0_GA "Bíonn fabhtanna ag baint le bogearraí atá ceadúnaithe go tráchtála agus a scaoiltear go hoifigiúil fiú. Ceartóidh an rogha seo fadhbanna áirithe a tharla fiú ar chrua-earraí fíor."
+#define BSNES_ENTROPY_LABEL_GA "Eintreapacht (randamú)"
+#define BSNES_ENTROPY_INFO_0_GA "Roghnaigh leibhéal randamaithe na cuimhne agus na gclár. Mura socraítear é seo, déantar luachanna tairiseacha a thosú ar an gcuimhne agus na cláir go léir ag an am tosaithe. Soláthraíonn randamú íseal an léiriú is cruinne ar chóras fíor. Déanann ard randamú a oiread agus is féidir."
+#define OPTION_VAL_LOW_GA "Íseal"
+#define OPTION_VAL_HIGH_GA "Ard"
+#define BSNES_CPU_FASTMATH_LABEL_GA "Matamaitic Thapa LAP"
+#define BSNES_CPU_FASTMATH_INFO_0_GA "Cuir torthaí ríomhaireachta ar fáil láithreach. Tógann sé tamall le hiolrú agus roinnt LAP a chríochnú ar SNES fíor. Níor insamhladh sean-aithriseoirí na moilleanna seo agus dá bhrí sin ní fhanann roinnt sean-hacanna ROM go dtí go gcríochnófar oibríochtaí matamaitice agus teastaíonn an haca seo uathu."
+#define BSNES_CPU_OVERCLOCK_LABEL_GA "Róchlogáil - LAP"
+#define BSNES_CPU_OVERCLOCK_LABEL_CAT_GA "LAP"
+#define BSNES_CPU_OVERCLOCK_INFO_0_GA "Róchlogáil nó ísliúchlogáil an LAP. Má shocraítear an luach seo os cionn 100%, d’fhéadfadh sé amanna lódála a laghdú agus moill a bhaint. Bí cúramach mar d’fhéadfadh sé go dtitfeadh roinnt cluichí nó go dtaispeánfadh sé fadhbanna eile."
+#define OPTION_VAL_210_GA NULL
+#define OPTION_VAL_220_GA NULL
+#define OPTION_VAL_230_GA NULL
+#define OPTION_VAL_240_GA NULL
+#define OPTION_VAL_250_GA NULL
+#define OPTION_VAL_260_GA NULL
+#define OPTION_VAL_270_GA NULL
+#define OPTION_VAL_280_GA NULL
+#define OPTION_VAL_290_GA NULL
+#define OPTION_VAL_300_GA NULL
+#define OPTION_VAL_310_GA NULL
+#define OPTION_VAL_320_GA NULL
+#define OPTION_VAL_330_GA NULL
+#define OPTION_VAL_340_GA NULL
+#define OPTION_VAL_350_GA NULL
+#define OPTION_VAL_360_GA NULL
+#define OPTION_VAL_370_GA NULL
+#define OPTION_VAL_380_GA NULL
+#define OPTION_VAL_390_GA NULL
+#define OPTION_VAL_400_GA NULL
+#define BSNES_CPU_SA1_OVERCLOCK_LABEL_GA "Róchlogáil - Comhphróiseálaí SA-1"
+#define BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_GA "Comhphróiseálaí SA-1"
+#define BSNES_CPU_SA1_OVERCLOCK_INFO_0_GA "Róchlogáil nó síoschlogáil an tslis Super Accelerator 1 (SA-1). Má shocraítear an luach seo os cionn 100%, d’fhéadfadh sé feabhas a chur ar fheidhmíocht i gcluichí a thacaíonn leis an tslis SA-1. Bí cúramach, mar d’fhéadfadh sé tuairteanna a chur ar roinnt cluichí nó fadhbanna eile a thaispeáint dá bharr."
+#define BSNES_CPU_SFX_OVERCLOCK_LABEL_GA "Róchlogáil - Comhphróiseálaí SuperFX"
+#define BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_GA "Comhphróiseálaí SuperFX"
+#define BSNES_CPU_SFX_OVERCLOCK_INFO_0_GA "Róchlogáil nó síoschlogáil an chomhphróiseálaí SuperFX. Má shocraítear an luach seo os cionn 100%, d’fhéadfadh sé feabhas a chur ar fheidhmíocht i gcluichí a thacaíonn leis an SuperFX. Bí cúramach, mar d’fhéadfadh sé tuairteanna a chur ar roinnt cluichí nó fadhbanna eile a thaispeáint."
+#define OPTION_VAL_410_GA NULL
+#define OPTION_VAL_420_GA NULL
+#define OPTION_VAL_430_GA NULL
+#define OPTION_VAL_440_GA NULL
+#define OPTION_VAL_450_GA NULL
+#define OPTION_VAL_460_GA NULL
+#define OPTION_VAL_470_GA NULL
+#define OPTION_VAL_480_GA NULL
+#define OPTION_VAL_490_GA NULL
+#define OPTION_VAL_500_GA NULL
+#define OPTION_VAL_510_GA NULL
+#define OPTION_VAL_520_GA NULL
+#define OPTION_VAL_530_GA NULL
+#define OPTION_VAL_540_GA NULL
+#define OPTION_VAL_550_GA NULL
+#define OPTION_VAL_560_GA NULL
+#define OPTION_VAL_570_GA NULL
+#define OPTION_VAL_580_GA NULL
+#define OPTION_VAL_590_GA NULL
+#define OPTION_VAL_600_GA NULL
+#define OPTION_VAL_610_GA NULL
+#define OPTION_VAL_620_GA NULL
+#define OPTION_VAL_630_GA NULL
+#define OPTION_VAL_640_GA NULL
+#define OPTION_VAL_650_GA NULL
+#define OPTION_VAL_660_GA NULL
+#define OPTION_VAL_670_GA NULL
+#define OPTION_VAL_680_GA NULL
+#define OPTION_VAL_690_GA NULL
+#define OPTION_VAL_700_GA NULL
+#define OPTION_VAL_710_GA NULL
+#define OPTION_VAL_720_GA NULL
+#define OPTION_VAL_730_GA NULL
+#define OPTION_VAL_740_GA NULL
+#define OPTION_VAL_750_GA NULL
+#define OPTION_VAL_760_GA NULL
+#define OPTION_VAL_770_GA NULL
+#define OPTION_VAL_780_GA NULL
+#define OPTION_VAL_790_GA NULL
+#define OPTION_VAL_800_GA NULL
+#define BSNES_SGB_BIOS_LABEL_GA "BIOS is fearr leat don Super Game Boy (Atosú Riachtanach)"
+#define BSNES_SGB_BIOS_INFO_0_GA "Roghnaigh an BIOS Super Game Boy is fearr leat le húsáid le teidil chomhoiriúnacha."
+#define OPTION_VAL_SGB1_SFC_GA NULL
+#define OPTION_VAL_SGB2_SFC_GA NULL
+#define BSNES_HIDE_SGB_BORDER_LABEL_GA "Folaigh Teorainn SGB"
+#define BSNES_HIDE_SGB_BORDER_INFO_0_GA "Folaigh an teorainn agus tú ag imirt cluichí Super Game Boy."
+#define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_GA "Gunna Solais Scáileáin Tadhaill"
+#define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_GA "Cumasaigh ionchur Super Scope le haghaidh gléasanna tadhaill."
+#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_GA "Cnaipí Truicear Droim ar Ais Super Scope"
+#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_INFO_0_GA "Droim ar ais na cnaipí truicear agus cúrsóra Super Scope leis an gunna solais ar an scáileán tadhaill."
+
+struct retro_core_option_v2_category option_cats_ga[] = {
+   {
+      "video",
+      CATEGORY_VIDEO_LABEL_GA,
+      CATEGORY_VIDEO_INFO_0_GA
+   },
+   {
+      "audio",
+      CATEGORY_AUDIO_LABEL_GA,
+      CATEGORY_AUDIO_INFO_0_GA
+   },
+   {
+      "mode7",
+      CATEGORY_MODE7_LABEL_GA,
+      CATEGORY_MODE7_INFO_0_GA
+   },
+   {
+      "hack",
+      CATEGORY_HACK_LABEL_GA,
+      CATEGORY_HACK_INFO_0_GA
+   },
+   {
+      "overclock",
+      CATEGORY_OVERCLOCK_LABEL_GA,
+      CATEGORY_OVERCLOCK_INFO_0_GA
+   },
+   {
+      "sgb",
+      CATEGORY_SGB_LABEL_GA,
+      CATEGORY_SGB_INFO_0_GA
+   },
+   {
+      "lightgun",
+      CATEGORY_LIGHTGUN_LABEL_GA,
+      CATEGORY_LIGHTGUN_INFO_0_GA
+   },
+
+   { NULL, NULL, NULL },
+};
+struct retro_core_option_v2_definition option_defs_ga[] = {
+   {
+      "bsnes_aspect_ratio",
+      BSNES_ASPECT_RATIO_LABEL_GA,
+      NULL,
+      BSNES_ASPECT_RATIO_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "Auto", OPTION_VAL_AUTO_GA },
+         { "1:1",  OPTION_VAL_1_1_GA },
+         { "4:3",  OPTION_VAL_4_3_GA },
+         { "NTSC", OPTION_VAL_NTSC_GA },
+         { "PAL",  OPTION_VAL_PAL_GA },
+         { NULL, NULL },
+      },
+      "Auto"
+   },
+   {
+      "bsnes_ppu_overscan_v",
+      BSNES_PPU_OVERSCAN_V_LABEL_GA,
+      NULL,
+      BSNES_PPU_OVERSCAN_V_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "0",  OPTION_VAL_0_GA },
+         { "8",  OPTION_VAL_8_GA },
+         { "12", OPTION_VAL_12_GA },
+         { "16", OPTION_VAL_16_GA },
+         { NULL, NULL },
+      },
+      "8"
+   },
+   {
+      "bsnes_blur_emulation",
+      BSNES_BLUR_EMULATION_LABEL_GA,
+      NULL,
+      BSNES_BLUR_EMULATION_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_video_filter",
+      BSNES_VIDEO_FILTER_LABEL_GA,
+      BSNES_VIDEO_FILTER_LABEL_GA,
+      BSNES_VIDEO_FILTER_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "None", OPTION_VAL_NONE_GA },
+         { "NTSC (RF)", OPTION_VAL_NTSC_RF_GA },
+         { "NTSC (Composite)", OPTION_VAL_NTSC_COMPOSITE_GA },
+         { "NTSC (S-Video)", OPTION_VAL_NTSC_S_VIDEO_GA },
+         { "NTSC (RGB)", OPTION_VAL_NTSC_RGB_GA },
+         { NULL, NULL },
+      },
+      "None"
+   },
+   {
+      "bsnes_video_luminance",
+      BSNES_VIDEO_LUMINANCE_LABEL_GA,
+      NULL,
+      BSNES_VIDEO_LUMINANCE_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "0", OPTION_VAL_0_O4_GA },
+         { "10", OPTION_VAL_10_GA },
+         { "20", OPTION_VAL_20_GA },
+         { "30", OPTION_VAL_30_GA },
+         { "40", OPTION_VAL_40_GA },
+         { "50", OPTION_VAL_50_GA },
+         { "60", OPTION_VAL_60_GA },
+         { "70", OPTION_VAL_70_GA },
+         { "80", OPTION_VAL_80_GA },
+         { "90", OPTION_VAL_90_GA },
+         { "100", OPTION_VAL_100_GA },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "bsnes_video_saturation",
+      BSNES_VIDEO_SATURATION_LABEL_GA,
+      NULL,
+      BSNES_VIDEO_SATURATION_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "0", OPTION_VAL_0_O4_GA },
+         { "10", OPTION_VAL_10_GA },
+         { "20", OPTION_VAL_20_GA },
+         { "30", OPTION_VAL_30_GA },
+         { "40", OPTION_VAL_40_GA },
+         { "50", OPTION_VAL_50_GA },
+         { "60", OPTION_VAL_60_GA },
+         { "70", OPTION_VAL_70_GA },
+         { "80", OPTION_VAL_80_GA },
+         { "90", OPTION_VAL_90_GA },
+         { "100", OPTION_VAL_100_GA },
+         { "110", OPTION_VAL_110_GA },
+         { "120", OPTION_VAL_120_GA },
+         { "130", OPTION_VAL_130_GA },
+         { "140", OPTION_VAL_140_GA },
+         { "150", OPTION_VAL_150_GA },
+         { "160", OPTION_VAL_160_GA },
+         { "170", OPTION_VAL_170_GA },
+         { "180", OPTION_VAL_180_GA },
+         { "190", OPTION_VAL_190_GA },
+         { "200", OPTION_VAL_200_GA },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "bsnes_video_gamma",
+      BSNES_VIDEO_GAMMA_LABEL_GA,
+      NULL,
+      BSNES_VIDEO_GAMMA_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "100", OPTION_VAL_100_O6_GA },
+         { "110", OPTION_VAL_110_GA },
+         { "120", OPTION_VAL_120_GA },
+         { "130", OPTION_VAL_130_GA },
+         { "140", OPTION_VAL_140_GA },
+         { "150", OPTION_VAL_150_O6_GA },
+         { "160", OPTION_VAL_160_GA },
+         { "170", OPTION_VAL_170_GA },
+         { "180", OPTION_VAL_180_GA },
+         { "190", OPTION_VAL_190_GA },
+         { "200", OPTION_VAL_200_GA },
+         { NULL, NULL },
+      },
+      "150"
+   },
+   {
+      "bsnes_ppu_fast",
+      BSNES_PPU_FAST_LABEL_GA,
+      BSNES_PPU_FAST_LABEL_CAT_GA,
+      BSNES_PPU_FAST_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_ppu_deinterlace",
+      BSNES_PPU_DEINTERLACE_LABEL_GA,
+      BSNES_PPU_DEINTERLACE_LABEL_CAT_GA,
+      BSNES_PPU_DEINTERLACE_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_ppu_no_sprite_limit",
+      BSNES_PPU_NO_SPRITE_LIMIT_LABEL_GA,
+      BSNES_PPU_NO_SPRITE_LIMIT_LABEL_CAT_GA,
+      BSNES_PPU_NO_SPRITE_LIMIT_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_ppu_no_vram_blocking",
+      BSNES_PPU_NO_VRAM_BLOCKING_LABEL_GA,
+      BSNES_PPU_NO_VRAM_BLOCKING_LABEL_CAT_GA,
+      BSNES_PPU_NO_VRAM_BLOCKING_INFO_0_GA,
+      NULL,
+      "video",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_dsp_fast",
+      BSNES_DSP_FAST_LABEL_GA,
+      BSNES_DSP_FAST_LABEL_CAT_GA,
+      BSNES_DSP_FAST_INFO_0_GA,
+      NULL,
+      "audio",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_dsp_cubic",
+      BSNES_DSP_CUBIC_LABEL_GA,
+      BSNES_DSP_CUBIC_LABEL_CAT_GA,
+      BSNES_DSP_CUBIC_INFO_0_GA,
+      NULL,
+      "audio",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_dsp_echo_shadow",
+      BSNES_DSP_ECHO_SHADOW_LABEL_GA,
+      BSNES_DSP_ECHO_SHADOW_LABEL_CAT_GA,
+      BSNES_DSP_ECHO_SHADOW_INFO_0_GA,
+      NULL,
+      "audio",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_mode7_scale",
+      BSNES_MODE7_SCALE_LABEL_GA,
+      BSNES_MODE7_SCALE_LABEL_CAT_GA,
+      BSNES_MODE7_SCALE_INFO_0_GA,
+      NULL,
+      "mode7",
+      {
+         { "1x", OPTION_VAL_1X_GA  },
+         { "2x", OPTION_VAL_2X_GA  },
+         { "3x", OPTION_VAL_3X_GA  },
+         { "4x", OPTION_VAL_4X_GA  },
+         { "5x", OPTION_VAL_5X_GA },
+         { "6x", OPTION_VAL_6X_GA },
+         { "7x", OPTION_VAL_7X_GA },
+         { "8x", OPTION_VAL_8X_GA },
+         { NULL, NULL },
+      },
+      "1x"
+   },
+   {
+      "bsnes_mode7_perspective",
+      BSNES_MODE7_PERSPECTIVE_LABEL_GA,
+      BSNES_MODE7_PERSPECTIVE_LABEL_CAT_GA,
+      BSNES_MODE7_PERSPECTIVE_INFO_0_GA,
+      NULL,
+      "mode7",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_mode7_supersample",
+      BSNES_MODE7_SUPERSAMPLE_LABEL_GA,
+      BSNES_MODE7_SUPERSAMPLE_LABEL_CAT_GA,
+      BSNES_MODE7_SUPERSAMPLE_INFO_0_GA,
+      NULL,
+      "mode7",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_mode7_mosaic",
+      BSNES_MODE7_MOSAIC_LABEL_GA,
+      BSNES_MODE7_MOSAIC_LABEL_CAT_GA,
+      BSNES_MODE7_MOSAIC_INFO_0_GA,
+      NULL,
+      "mode7",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_run_ahead_frames",
+      BSNES_RUN_AHEAD_FRAMES_LABEL_GA,
+      NULL,
+      BSNES_RUN_AHEAD_FRAMES_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "OFF", "disabled" },
+         { "1",   OPTION_VAL_1_GA  },
+         { "2",   OPTION_VAL_2_GA },
+         { "3",   OPTION_VAL_3_GA },
+         { "4",   OPTION_VAL_4_GA },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_coprocessor_delayed_sync",
+      BSNES_COPROCESSOR_DELAYED_SYNC_LABEL_GA,
+      NULL,
+      BSNES_COPROCESSOR_DELAYED_SYNC_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_coprocessor_prefer_hle",
+      BSNES_COPROCESSOR_PREFER_HLE_LABEL_GA,
+      NULL,
+      BSNES_COPROCESSOR_PREFER_HLE_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_hotfixes",
+      BSNES_HOTFIXES_LABEL_GA,
+      NULL,
+      BSNES_HOTFIXES_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_entropy",
+      BSNES_ENTROPY_LABEL_GA,
+      NULL,
+      BSNES_ENTROPY_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "Low",  OPTION_VAL_LOW_GA },
+         { "High", OPTION_VAL_HIGH_GA },
+         { "None", OPTION_VAL_NONE_GA },
+         { NULL, NULL },
+      },
+      "Low"
+   },
+   {
+      "bsnes_cpu_fastmath",
+      BSNES_CPU_FASTMATH_LABEL_GA,
+      NULL,
+      BSNES_CPU_FASTMATH_INFO_0_GA,
+      NULL,
+      "hack",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_cpu_overclock",
+      BSNES_CPU_OVERCLOCK_LABEL_GA,
+      BSNES_CPU_OVERCLOCK_LABEL_CAT_GA,
+      BSNES_CPU_OVERCLOCK_INFO_0_GA,
+      NULL,
+      "overclock",
+      {
+         { "10",  OPTION_VAL_10_GA  },
+         { "20",  OPTION_VAL_20_GA  },
+         { "30",  OPTION_VAL_30_GA  },
+         { "40",  OPTION_VAL_40_GA  },
+         { "50",  OPTION_VAL_50_GA  },
+         { "60",  OPTION_VAL_60_GA  },
+         { "70",  OPTION_VAL_70_GA  },
+         { "80",  OPTION_VAL_80_GA  },
+         { "90",  OPTION_VAL_90_GA  },
+         { "100", OPTION_VAL_100_GA },
+         { "110", OPTION_VAL_110_GA },
+         { "120", OPTION_VAL_120_GA },
+         { "130", OPTION_VAL_130_GA },
+         { "140", OPTION_VAL_140_GA },
+         { "150", OPTION_VAL_150_GA },
+         { "160", OPTION_VAL_160_GA },
+         { "170", OPTION_VAL_170_GA },
+         { "180", OPTION_VAL_180_GA },
+         { "190", OPTION_VAL_190_GA },
+         { "200", OPTION_VAL_200_GA },
+         { "210", OPTION_VAL_210_GA },
+         { "220", OPTION_VAL_220_GA },
+         { "230", OPTION_VAL_230_GA },
+         { "240", OPTION_VAL_240_GA },
+         { "250", OPTION_VAL_250_GA },
+         { "260", OPTION_VAL_260_GA },
+         { "270", OPTION_VAL_270_GA },
+         { "280", OPTION_VAL_280_GA },
+         { "290", OPTION_VAL_290_GA },
+         { "300", OPTION_VAL_300_GA },
+         { "310", OPTION_VAL_310_GA },
+         { "320", OPTION_VAL_320_GA },
+         { "330", OPTION_VAL_330_GA },
+         { "340", OPTION_VAL_340_GA },
+         { "350", OPTION_VAL_350_GA },
+         { "360", OPTION_VAL_360_GA },
+         { "370", OPTION_VAL_370_GA },
+         { "380", OPTION_VAL_380_GA },
+         { "390", OPTION_VAL_390_GA },
+         { "400", OPTION_VAL_400_GA },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "bsnes_cpu_sa1_overclock",
+      BSNES_CPU_SA1_OVERCLOCK_LABEL_GA,
+      BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_GA,
+      BSNES_CPU_SA1_OVERCLOCK_INFO_0_GA,
+      NULL,
+      "overclock",
+      {
+         { "10",  OPTION_VAL_10_GA  },
+         { "20",  OPTION_VAL_20_GA  },
+         { "30",  OPTION_VAL_30_GA  },
+         { "40",  OPTION_VAL_40_GA  },
+         { "50",  OPTION_VAL_50_GA  },
+         { "60",  OPTION_VAL_60_GA  },
+         { "70",  OPTION_VAL_70_GA  },
+         { "80",  OPTION_VAL_80_GA  },
+         { "90",  OPTION_VAL_90_GA  },
+         { "100", OPTION_VAL_100_GA },
+         { "110", OPTION_VAL_110_GA },
+         { "120", OPTION_VAL_120_GA },
+         { "130", OPTION_VAL_130_GA },
+         { "140", OPTION_VAL_140_GA },
+         { "150", OPTION_VAL_150_GA },
+         { "160", OPTION_VAL_160_GA },
+         { "170", OPTION_VAL_170_GA },
+         { "180", OPTION_VAL_180_GA },
+         { "190", OPTION_VAL_190_GA },
+         { "200", OPTION_VAL_200_GA },
+         { "210", OPTION_VAL_210_GA },
+         { "220", OPTION_VAL_220_GA },
+         { "230", OPTION_VAL_230_GA },
+         { "240", OPTION_VAL_240_GA },
+         { "250", OPTION_VAL_250_GA },
+         { "260", OPTION_VAL_260_GA },
+         { "270", OPTION_VAL_270_GA },
+         { "280", OPTION_VAL_280_GA },
+         { "290", OPTION_VAL_290_GA },
+         { "300", OPTION_VAL_300_GA },
+         { "310", OPTION_VAL_310_GA },
+         { "320", OPTION_VAL_320_GA },
+         { "330", OPTION_VAL_330_GA },
+         { "340", OPTION_VAL_340_GA },
+         { "350", OPTION_VAL_350_GA },
+         { "360", OPTION_VAL_360_GA },
+         { "370", OPTION_VAL_370_GA },
+         { "380", OPTION_VAL_380_GA },
+         { "390", OPTION_VAL_390_GA },
+         { "400", OPTION_VAL_400_GA },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "bsnes_cpu_sfx_overclock",
+      BSNES_CPU_SFX_OVERCLOCK_LABEL_GA,
+      BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_GA,
+      BSNES_CPU_SFX_OVERCLOCK_INFO_0_GA,
+      NULL,
+      "overclock",
+      {
+         { "10",  OPTION_VAL_10_GA  },
+         { "20",  OPTION_VAL_20_GA  },
+         { "30",  OPTION_VAL_30_GA  },
+         { "40",  OPTION_VAL_40_GA  },
+         { "50",  OPTION_VAL_50_GA  },
+         { "60",  OPTION_VAL_60_GA  },
+         { "70",  OPTION_VAL_70_GA  },
+         { "80",  OPTION_VAL_80_GA  },
+         { "90",  OPTION_VAL_90_GA  },
+         { "100", OPTION_VAL_100_GA },
+         { "110", OPTION_VAL_110_GA },
+         { "120", OPTION_VAL_120_GA },
+         { "130", OPTION_VAL_130_GA },
+         { "140", OPTION_VAL_140_GA },
+         { "150", OPTION_VAL_150_GA },
+         { "160", OPTION_VAL_160_GA },
+         { "170", OPTION_VAL_170_GA },
+         { "180", OPTION_VAL_180_GA },
+         { "190", OPTION_VAL_190_GA },
+         { "200", OPTION_VAL_200_GA },
+         { "210", OPTION_VAL_210_GA },
+         { "220", OPTION_VAL_220_GA },
+         { "230", OPTION_VAL_230_GA },
+         { "240", OPTION_VAL_240_GA },
+         { "250", OPTION_VAL_250_GA },
+         { "260", OPTION_VAL_260_GA },
+         { "270", OPTION_VAL_270_GA },
+         { "280", OPTION_VAL_280_GA },
+         { "290", OPTION_VAL_290_GA },
+         { "300", OPTION_VAL_300_GA },
+         { "310", OPTION_VAL_310_GA },
+         { "320", OPTION_VAL_320_GA },
+         { "330", OPTION_VAL_330_GA },
+         { "340", OPTION_VAL_340_GA },
+         { "350", OPTION_VAL_350_GA },
+         { "360", OPTION_VAL_360_GA },
+         { "370", OPTION_VAL_370_GA },
+         { "380", OPTION_VAL_380_GA },
+         { "390", OPTION_VAL_390_GA },
+         { "400", OPTION_VAL_400_GA },
+         { "410", OPTION_VAL_410_GA },
+         { "420", OPTION_VAL_420_GA },
+         { "430", OPTION_VAL_430_GA },
+         { "440", OPTION_VAL_440_GA },
+         { "450", OPTION_VAL_450_GA },
+         { "460", OPTION_VAL_460_GA },
+         { "470", OPTION_VAL_470_GA },
+         { "480", OPTION_VAL_480_GA },
+         { "490", OPTION_VAL_490_GA },
+         { "500", OPTION_VAL_500_GA },
+         { "510", OPTION_VAL_510_GA },
+         { "520", OPTION_VAL_520_GA },
+         { "530", OPTION_VAL_530_GA },
+         { "540", OPTION_VAL_540_GA },
+         { "550", OPTION_VAL_550_GA },
+         { "560", OPTION_VAL_560_GA },
+         { "570", OPTION_VAL_570_GA },
+         { "580", OPTION_VAL_580_GA },
+         { "590", OPTION_VAL_590_GA },
+         { "600", OPTION_VAL_600_GA },
+         { "610", OPTION_VAL_610_GA },
+         { "620", OPTION_VAL_620_GA },
+         { "630", OPTION_VAL_630_GA },
+         { "640", OPTION_VAL_640_GA },
+         { "650", OPTION_VAL_650_GA },
+         { "660", OPTION_VAL_660_GA },
+         { "670", OPTION_VAL_670_GA },
+         { "680", OPTION_VAL_680_GA },
+         { "690", OPTION_VAL_690_GA },
+         { "700", OPTION_VAL_700_GA },
+         { "710", OPTION_VAL_710_GA },
+         { "720", OPTION_VAL_720_GA },
+         { "730", OPTION_VAL_730_GA },
+         { "740", OPTION_VAL_740_GA },
+         { "750", OPTION_VAL_750_GA },
+         { "760", OPTION_VAL_760_GA },
+         { "770", OPTION_VAL_770_GA },
+         { "780", OPTION_VAL_780_GA },
+         { "790", OPTION_VAL_790_GA },
+         { "800", OPTION_VAL_800_GA },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "bsnes_sgb_bios",
+      BSNES_SGB_BIOS_LABEL_GA,
+      NULL,
+      BSNES_SGB_BIOS_INFO_0_GA,
+      NULL,
+      "sgb",
+      {
+         { "SGB1.sfc", OPTION_VAL_SGB1_SFC_GA   },
+         { "SGB2.sfc", OPTION_VAL_SGB2_SFC_GA },
+         { NULL, NULL },
+      },
+      "SGB1.sfc"
+   },
+   {
+      "bsnes_hide_sgb_border",
+      BSNES_HIDE_SGB_BORDER_LABEL_GA,
+      NULL,
+      BSNES_HIDE_SGB_BORDER_INFO_0_GA,
+      NULL,
+      "sgb",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+   {
+      "bsnes_touchscreen_lightgun",
+      BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_GA,
+      NULL,
+      BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_GA,
+      NULL,
+      "lightgun",
+      {
+         { "ON",  "enabled"  },
+         { "OFF", "disabled" },
+         { NULL, NULL },
+      },
+      "ON"
+   },
+   {
+      "bsnes_touchscreen_lightgun_superscope_reverse",
+      BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_GA,
+      NULL,
+      BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_INFO_0_GA,
+      NULL,
+      "lightgun",
+      {
+         { "OFF", "disabled" },
+         { "ON",  "enabled"  },
+         { NULL, NULL },
+      },
+      "OFF"
+   },
+
+   { NULL, NULL, NULL, NULL, NULL, NULL, {{0}}, NULL },
+};
+struct retro_core_options_v2 options_ga = {
+   option_cats_ga,
+   option_defs_ga
 };
 
 /* RETRO_LANGUAGE_GL */
@@ -31439,32 +32336,32 @@ struct retro_core_options_v2 options_sr = {
 #define CATEGORY_AUDIO_LABEL_SV "Ljud"
 #define CATEGORY_AUDIO_INFO_0_SV "Ändra inställningar för ljudutgången."
 #define CATEGORY_MODE7_LABEL_SV NULL
-#define CATEGORY_MODE7_INFO_0_SV NULL
+#define CATEGORY_MODE7_INFO_0_SV "Ändra inställningar för Mode 7-grafikemulering."
 #define CATEGORY_HACK_LABEL_SV "Emuleringshack och förbättringar"
-#define CATEGORY_HACK_INFO_0_SV NULL
-#define CATEGORY_OVERCLOCK_LABEL_SV NULL
-#define CATEGORY_OVERCLOCK_INFO_0_SV NULL
+#define CATEGORY_HACK_INFO_0_SV "Tillämpa emuleringshack, förbättringar och snabbkorrigeringar."
+#define CATEGORY_OVERCLOCK_LABEL_SV "Över-/nerklockning"
+#define CATEGORY_OVERCLOCK_INFO_0_SV "Ändra hastigheten på den emulerade hårdvaran."
 #define CATEGORY_SGB_LABEL_SV NULL
-#define CATEGORY_SGB_INFO_0_SV NULL
+#define CATEGORY_SGB_INFO_0_SV "Ändra inställningar för emuleringen av Super Game Boy."
 #define CATEGORY_LIGHTGUN_LABEL_SV "Ljuspistol"
-#define CATEGORY_LIGHTGUN_INFO_0_SV NULL
+#define CATEGORY_LIGHTGUN_INFO_0_SV "Ändra inställningar för ljuspistol (pekskärm)."
 #define BSNES_ASPECT_RATIO_LABEL_SV "Föredraget bildformat"
 #define BSNES_ASPECT_RATIO_INFO_0_SV "Välj det föredragna bildformatet för Innehållet. Detta kommer endast att tillämpas när RetroArchs bildformat är inställt på \"Kärnspecifikt\" i Video-inställningarna."
 #define OPTION_VAL_AUTO_SV NULL
-#define OPTION_VAL_1_1_SV NULL
+#define OPTION_VAL_1_1_SV "1:1 PAR (bildpunktsperfekt)"
 #define OPTION_VAL_4_3_SV NULL
 #define OPTION_VAL_NTSC_SV NULL
 #define OPTION_VAL_PAL_SV NULL
-#define BSNES_PPU_OVERSCAN_V_LABEL_SV NULL
-#define BSNES_PPU_OVERSCAN_V_INFO_0_SV NULL
-#define OPTION_VAL_0_SV NULL
-#define OPTION_VAL_8_SV NULL
-#define OPTION_VAL_12_SV NULL
-#define OPTION_VAL_16_SV NULL
-#define BSNES_BLUR_EMULATION_LABEL_SV NULL
-#define BSNES_BLUR_EMULATION_INFO_0_SV NULL
+#define BSNES_PPU_OVERSCAN_V_LABEL_SV "Beskär vertikal overscan"
+#define BSNES_PPU_OVERSCAN_V_INFO_0_SV "Ta bort N linjer från skärmens över- och undersida för att simulera ramen på en TV från SNES-eran."
+#define OPTION_VAL_0_SV "0 linjer"
+#define OPTION_VAL_8_SV "8 linjer"
+#define OPTION_VAL_12_SV "12 linjer"
+#define OPTION_VAL_16_SV "16 linjer"
+#define BSNES_BLUR_EMULATION_LABEL_SV "Oskarp emulering"
+#define BSNES_BLUR_EMULATION_INFO_0_SV "Simulerar den begränsade horisontella upplösningen hos SDTV genom att sudda ihop horisontellt intilliggande bildpunkter. Vissa spel är beroende av detta för att emulera en transparenseffekt."
 #define BSNES_VIDEO_FILTER_LABEL_SV NULL
-#define BSNES_VIDEO_FILTER_INFO_0_SV NULL
+#define BSNES_VIDEO_FILTER_INFO_0_SV "Välj mellan ingen filtrering och blarggs NTSC-filter med alternativ för RF, Komposit, S-Video eller RGB"
 #define OPTION_VAL_NONE_SV "Ingen"
 #define OPTION_VAL_NTSC_RF_SV NULL
 #define OPTION_VAL_NTSC_COMPOSITE_SV "NTSC (Komposit)"
@@ -31504,25 +32401,25 @@ struct retro_core_options_v2 options_sr = {
 #define BSNES_PPU_FAST_INFO_0_SV "Möjliggör snabbare emulering av PPU till bekostnad av en mindre minskning av noggrannheten. Rekommenderas att låta detta vara kvar som aktiv. OBS: Detta måste vara aktiverat för att alternativen 'Deinterlace', 'Ingen blockfigursgräns' och 'HD-läge 7' ska fungera."
 #define BSNES_PPU_DEINTERLACE_LABEL_SV NULL
 #define BSNES_PPU_DEINTERLACE_LABEL_CAT_SV NULL
-#define BSNES_PPU_DEINTERLACE_INFO_0_SV NULL
+#define BSNES_PPU_DEINTERLACE_INFO_0_SV "Använd deinterlace på alla spel genom att rendera internt i 480p. Prestandaförlusten är nästan obefintlig, så det rekommenderas att låta detta vara aktiverat."
 #define BSNES_PPU_NO_SPRITE_LIMIT_LABEL_SV "PPU (Video) - Ingen blockfigursgräns"
 #define BSNES_PPU_NO_SPRITE_LIMIT_LABEL_CAT_SV "PPU - Ingen blockfigursgräns"
 #define BSNES_PPU_NO_SPRITE_LIMIT_INFO_0_SV "Ta bort alla begränsningar för antalet blockfigurer som kan ritas samtidigt på skärmen. Kan orsaka problem med vissa spel."
-#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_SV NULL
-#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_CAT_SV NULL
+#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_SV "PPU (Video) - Ingen VRAM-blockering"
+#define BSNES_PPU_NO_VRAM_BLOCKING_LABEL_CAT_SV "PPU - Ingen VRAM-blockering"
 #define BSNES_PPU_NO_VRAM_BLOCKING_INFO_0_SV "Emulerar ett fel i äldre versioner av ZSNES och Snes9x, där VRAM-blockering inte emulerades. Några äldre ROM-hack förlitade sig på detta beteende och kommer att rendera grafik felaktigt om detta inte är aktiverat. Det här alternativet är extremt felaktigt och skadar PPU-hastigheten, så det rekommenderas att du låter det vara avaktiverat om du inte behöver spela ett spel som annars är inkompatibelt med den här kärnan."
 #define BSNES_DSP_FAST_LABEL_SV "DSP (ljud) - Snabbt läge"
 #define BSNES_DSP_FAST_LABEL_CAT_SV "DSP - Snabbt läge"
-#define BSNES_DSP_FAST_INFO_0_SV NULL
-#define BSNES_DSP_CUBIC_LABEL_SV NULL
-#define BSNES_DSP_CUBIC_LABEL_CAT_SV NULL
-#define BSNES_DSP_CUBIC_INFO_0_SV NULL
-#define BSNES_DSP_ECHO_SHADOW_LABEL_SV NULL
+#define BSNES_DSP_FAST_INFO_0_SV "Aktivera snabbare emulering av DSPn på bekostnad av en mindre minskning av noggrannheten. Vi rekommenderar att du låter detta vara aktiverat."
+#define BSNES_DSP_CUBIC_LABEL_SV "DSP (Ljud) - Kubisk interpolation"
+#define BSNES_DSP_CUBIC_LABEL_CAT_SV "DSP - Kubisk interpolation"
+#define BSNES_DSP_CUBIC_INFO_0_SV "Tillämpa kubisk interpolering på ljudet, vilket bevarar mer av det höga omfånget."
+#define BSNES_DSP_ECHO_SHADOW_LABEL_SV "DSP (Ljud) - Echo Shadow RAM"
 #define BSNES_DSP_ECHO_SHADOW_LABEL_CAT_SV NULL
 #define BSNES_DSP_ECHO_SHADOW_INFO_0_SV "Emulerar en bugg i ZSNES där echo RAM behandlades som separat från APU RAM. Många äldre ROM-hack för Super Mario World förlitade sig på detta beteende och kommer att krascha utan detta. Det här alternativet är extremt felaktigt och bör inte aktiveras om det inte behövs."
-#define BSNES_MODE7_SCALE_LABEL_SV NULL
+#define BSNES_MODE7_SCALE_LABEL_SV "HD Mode 7 - Skala"
 #define BSNES_MODE7_SCALE_LABEL_CAT_SV "Skala"
-#define BSNES_MODE7_SCALE_INFO_0_SV NULL
+#define BSNES_MODE7_SCALE_INFO_0_SV "Öka den horisontella och vertikala upplösningen för Mode 7-grafiken som används i vissa spel."
 #define OPTION_VAL_1X_SV NULL
 #define OPTION_VAL_2X_SV NULL
 #define OPTION_VAL_3X_SV NULL
@@ -31531,28 +32428,28 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_6X_SV NULL
 #define OPTION_VAL_7X_SV NULL
 #define OPTION_VAL_8X_SV NULL
-#define BSNES_MODE7_PERSPECTIVE_LABEL_SV NULL
+#define BSNES_MODE7_PERSPECTIVE_LABEL_SV "HD Mode 7 - Perspektivkorrigering"
 #define BSNES_MODE7_PERSPECTIVE_LABEL_CAT_SV "Perspektivkorrigering"
-#define BSNES_MODE7_PERSPECTIVE_INFO_0_SV NULL
+#define BSNES_MODE7_PERSPECTIVE_INFO_0_SV "Korrigera perspektivet i Mode 7-grafiken som används i vissa spel genom att kringgå vissa begränsningar i den heltalsmatematik som används av SNES."
 #define BSNES_MODE7_SUPERSAMPLE_LABEL_SV NULL
 #define BSNES_MODE7_SUPERSAMPLE_LABEL_CAT_SV NULL
-#define BSNES_MODE7_SUPERSAMPLE_INFO_0_SV NULL
-#define BSNES_MODE7_MOSAIC_LABEL_SV NULL
-#define BSNES_MODE7_MOSAIC_LABEL_CAT_SV NULL
-#define BSNES_MODE7_MOSAIC_INFO_0_SV NULL
-#define BSNES_RUN_AHEAD_FRAMES_LABEL_SV NULL
-#define BSNES_RUN_AHEAD_FRAMES_INFO_0_SV NULL
+#define BSNES_MODE7_SUPERSAMPLE_INFO_0_SV "Supersamplar Mode 7-grafiken som används i vissa spel. I kombination med högre Mode 7-skalfaktorer ger det en effekt som liknar anti-aliasing."
+#define BSNES_MODE7_MOSAIC_LABEL_SV "HD Mode 7 - HD->SD-mosaik"
+#define BSNES_MODE7_MOSAIC_LABEL_CAT_SV "HD->SD-mosaik"
+#define BSNES_MODE7_MOSAIC_INFO_0_SV "Visa mosaikeffekten av Mode 7-grafik även när du uppskalar den."
+#define BSNES_RUN_AHEAD_FRAMES_LABEL_SV "Intern Run-Ahead"
+#define BSNES_RUN_AHEAD_FRAMES_INFO_0_SV "Simulera systemet i förväg och återställ för att minska ingångsfördröjningen. Har mycket höga systemkrav."
 #define OPTION_VAL_1_SV "1 bildruta"
 #define OPTION_VAL_2_SV "2 bildrutor"
 #define OPTION_VAL_3_SV "3 bildrutor"
 #define OPTION_VAL_4_SV "4 bildrutor"
-#define BSNES_COPROCESSOR_DELAYED_SYNC_LABEL_SV NULL
-#define BSNES_COPROCESSOR_DELAYED_SYNC_INFO_0_SV NULL
-#define BSNES_COPROCESSOR_PREFER_HLE_LABEL_SV NULL
-#define BSNES_COPROCESSOR_PREFER_HLE_INFO_0_SV NULL
+#define BSNES_COPROCESSOR_DELAYED_SYNC_LABEL_SV "Co-processorer - Snabbt läge"
+#define BSNES_COPROCESSOR_DELAYED_SYNC_INFO_0_SV "Möjliggör snabbare emulering av co-processorerna på bekostnad av en mindre minskning av noggrannheten. Vi rekommenderar att du låter detta vara aktiverat."
+#define BSNES_COPROCESSOR_PREFER_HLE_LABEL_SV "Co-processorer - Föredra HLE"
+#define BSNES_COPROCESSOR_PREFER_HLE_INFO_0_SV "När detta alternativ är aktiverat kommer den mindre exakta HLE-emuleringen alltid att användas när den är tillgänglig. Om det är inaktiverat används HLE endast när LLE-firmware saknas."
 #define BSNES_HOTFIXES_LABEL_SV "Snabbfixar"
-#define BSNES_HOTFIXES_INFO_0_SV NULL
-#define BSNES_ENTROPY_LABEL_SV NULL
+#define BSNES_HOTFIXES_INFO_0_SV "Även kommersiellt licensierad och officiellt släppt programvara levereras ibland med buggar. Det här alternativet korrigerar vissa problem som uppstod även på riktig maskinvara."
+#define BSNES_ENTROPY_LABEL_SV "Entropi (slumpmässighet)"
 #define BSNES_ENTROPY_INFO_0_SV "Välj graden av randomisering av minnet och registren. Om inställningen är None initialiseras alla minnen och register till konstanta värden vid start. Låg randomisering ger den mest exakta representationen av ett verkligt system. High slumpas så mycket som möjligt."
 #define OPTION_VAL_LOW_SV "Låg"
 #define OPTION_VAL_HIGH_SV "Hög"
@@ -31581,11 +32478,11 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_380_SV NULL
 #define OPTION_VAL_390_SV NULL
 #define OPTION_VAL_400_SV NULL
-#define BSNES_CPU_SA1_OVERCLOCK_LABEL_SV NULL
-#define BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_SV NULL
+#define BSNES_CPU_SA1_OVERCLOCK_LABEL_SV "Överklockning - SA-1-co-processor"
+#define BSNES_CPU_SA1_OVERCLOCK_LABEL_CAT_SV "SA-1-co-processor"
 #define BSNES_CPU_SA1_OVERCLOCK_INFO_0_SV "Överklocka eller nedklocka Super Accelerator 1 (SA-1)-chipet. Om du ställer in det här värdet på över 100 % kan det förbättra prestandan i spel som stöder SA-1-chippet. Använd det med försiktighet, eftersom det också kan leda till att vissa spel kraschar eller uppvisar andra problem."
-#define BSNES_CPU_SFX_OVERCLOCK_LABEL_SV NULL
-#define BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_SV NULL
+#define BSNES_CPU_SFX_OVERCLOCK_LABEL_SV "Överklockning - SuperFX-co-processor"
+#define BSNES_CPU_SFX_OVERCLOCK_LABEL_CAT_SV "SuperFX-co-processor"
 #define BSNES_CPU_SFX_OVERCLOCK_INFO_0_SV "Överklocka eller nedklocka SuperFX coprocessor. Om du ställer in det här värdet på över 100% kan det förbättra prestandan i spel som stöder SuperFX. Använd det med försiktighet, eftersom det också kan leda till att vissa spel kraschar eller uppvisar andra problem."
 #define OPTION_VAL_410_SV NULL
 #define OPTION_VAL_420_SV NULL
@@ -31628,15 +32525,15 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_790_SV "790 %"
 #define OPTION_VAL_800_SV "800 %"
 #define BSNES_SGB_BIOS_LABEL_SV "Föredraget Super Game Boy BIOS (omstart krävs)"
-#define BSNES_SGB_BIOS_INFO_0_SV NULL
+#define BSNES_SGB_BIOS_INFO_0_SV "Välj föredragen Super Game Boy BIOS som ska användas med kompatibla titlar."
 #define OPTION_VAL_SGB1_SFC_SV NULL
 #define OPTION_VAL_SGB2_SFC_SV NULL
-#define BSNES_HIDE_SGB_BORDER_LABEL_SV NULL
-#define BSNES_HIDE_SGB_BORDER_INFO_0_SV NULL
-#define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_SV NULL
-#define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_SV NULL
-#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_SV NULL
-#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_INFO_0_SV NULL
+#define BSNES_HIDE_SGB_BORDER_LABEL_SV "Dölj SGB-ram"
+#define BSNES_HIDE_SGB_BORDER_INFO_0_SV "Dölj ramen när Super Game Boy-spel spelas."
+#define BSNES_TOUCHSCREEN_LIGHTGUN_LABEL_SV "Ljuspistol för pekskärm"
+#define BSNES_TOUCHSCREEN_LIGHTGUN_INFO_0_SV "Aktivera Super Scope-inmatning för pekskärmsenheter."
+#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_LABEL_SV "Omvända Super Scope-avtryckarknappar"
+#define BSNES_TOUCHSCREEN_LIGHTGUN_SUPERSCOPE_REVERSE_INFO_0_SV "Vänd om Super Scope-avtryckaren och markörknapparna med pekskärmens ljuspistol."
 
 struct retro_core_option_v2_category option_cats_sv[] = {
    {
