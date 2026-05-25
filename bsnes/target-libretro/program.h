@@ -39,7 +39,6 @@ struct Program : Emulator::Platform
 	auto updateVideoPalette() -> void;
 
 	string base_name;
-	string save_path;
 
 	int overscan{8};
 

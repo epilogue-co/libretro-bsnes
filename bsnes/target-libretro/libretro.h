@@ -2625,7 +2625,7 @@ struct retro_rumble_interface
 };
 
 /* Notifies libretro that the save has been updated. */
-typedef void (RETRO_CALLCONV *retro_save_updated_callback_t)();
+typedef void (RETRO_CALLCONV *retro_save_updated_callback_t)(void *context);
 
 struct retro_save_updated_callback {
   retro_save_updated_callback_t callback;
@@ -3941,8 +3941,6 @@ RETRO_API unsigned retro_get_region(void);
 /* Gets region of memory. */
 RETRO_API void *retro_get_memory_data(unsigned id);
 RETRO_API size_t retro_get_memory_size(unsigned id);
-RETRO_API const char* retro_store_save_path(void);
-RETRO_API void retro_load_external_save(const retro_game_info *game, void* data, size_t size);
 RETRO_API bool retro_has_save_changed(void);
 
 #ifdef __cplusplus

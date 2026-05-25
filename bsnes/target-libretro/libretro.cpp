@@ -1,9 +1,9 @@
 #include <cassert>
-#include <chrono> 
+#include <chrono>
 #include "libretro.h"
 #include "libretro_core_options.h"
 #include <emulator/emulator.hpp>
-#include <sfc/interface/interface.hpp>
+#include <sfc/sfc.hpp>
 #include "program.h"
 
 retro_environment_t environ_cb;
@@ -40,8 +40,9 @@ void audio_queue(int16_t left, int16_t right)
 	}
 }
 
-static void (*savedataUpdated)(); // callback for automatic save updates
+static void (*savedataUpdated)(void*); // callback for automatic save updates
 static int8_t auto_save_timeout = 5; // number of seconds until next automatic save check
+static void set_memory_maps();  // exposes WRAM, SRAM, and SA-1 IRAM to the frontend
 
 static unique_pointer<Emulator::Interface> emulator;
 
@@ -828,7 +829,7 @@ void retro_run()
 	auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_check_time).count();
 	if (elapsed_time >= auto_save_timeout) {
 		last_check_time = current_time;
-		if (retro_has_save_changed()) savedataUpdated();
+		if (retro_has_save_changed()) savedataUpdated(nullptr);
     }
 }
 
@@ -981,6 +982,7 @@ bool retro_load_game(const retro_game_info *game)
 		savedataUpdated = save_updated_cb;
 	}
 
+	set_memory_maps();
 	return true;
 }
 
@@ -1041,88 +1043,78 @@ unsigned retro_get_region()
 	return program->superFamicom.region == "NTSC" ? RETRO_REGION_NTSC : RETRO_REGION_PAL;
 }
 
+static void set_memory_maps() {
+	// SNES native address for WRAM ($7E:0000-$7F:FFFF).
+	constexpr size_t WRAM_ADDRESS = 0x7e0000;
+	// Virtual addresses outside SNES native space; values come from rcheevos
+	// (RetroAchievements/rcheevos consoleinfo.c, _rc_memory_regions_snes).
+	constexpr size_t CART_RAM_ADDRESS = 0x1000000;
+	constexpr size_t SA1_IRAM_ADDRESS = 0x1080000;
+
+	auto& cart = SuperFamicom::cartridge;
+	static struct retro_memory_descriptor descs[3];
+	unsigned count = 0;
+
+	descs[count++] = { RETRO_MEMDESC_SYSTEM_RAM, SuperFamicom::cpu.wram, 0, WRAM_ADDRESS, 0, 0, sizeof(SuperFamicom::cpu.wram), nullptr };
+
+	void* save_data = retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);
+	size_t save_size = retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);
+	if (save_data && save_size > 0) {
+		descs[count++] = { RETRO_MEMDESC_SAVE_RAM, save_data, 0, CART_RAM_ADDRESS, 0, 0, save_size, nullptr };
+	}
+
+	if (cart.has.SA1 && SuperFamicom::sa1.iram.size() > 0) {
+		descs[count++] = { RETRO_MEMDESC_SYSTEM_RAM, SuperFamicom::sa1.iram.data(), 0, SA1_IRAM_ADDRESS, 0, 0, SuperFamicom::sa1.iram.size(), nullptr };
+	}
+
+	struct retro_memory_map map = { descs, count };
+	environ_cb(RETRO_ENVIRONMENT_SET_MEMORY_MAPS, &map);
+}
+
+static auto getSaveRam() -> std::pair<void*, size_t> {
+	auto& cart = SuperFamicom::cartridge;
+	if (cart.has.SA1)        return {SuperFamicom::sa1.bwram.data(),       SuperFamicom::sa1.bwram.size()};
+	if (cart.has.SuperFX)    return {SuperFamicom::superfx.ram.data(),     SuperFamicom::superfx.ram.size()};
+	if (cart.has.HitachiDSP) return {SuperFamicom::hitachidsp.ram.data(),  SuperFamicom::hitachidsp.ram.size()};
+	if (cart.has.SPC7110)    return {SuperFamicom::spc7110.ram.data(),     SuperFamicom::spc7110.ram.size()};
+	if (cart.has.OBC1)       return {SuperFamicom::obc1.ram.data(),        SuperFamicom::obc1.ram.size()};
+	if (cart.has.NECDSP)     return {SuperFamicom::necdsp.dataRAM,         sizeof(SuperFamicom::necdsp.dataRAM)};
+	if (cart.has.ARMDSP)     return {SuperFamicom::armdsp.programRAM,      sizeof(SuperFamicom::armdsp.programRAM)};
+	return {cart.ram.data(), cart.ram.size()};
+}
+
 void* retro_get_memory_data(unsigned id) {
-	program->save();
-
-	FILE* file = fopen(program->save_path, "rb");
-	if (!file) {
-		return NULL;
+	if (!emulator->loaded()) return nullptr;
+	switch (id) {
+		case RETRO_MEMORY_SAVE_RAM:   return getSaveRam().first;
+		case RETRO_MEMORY_SYSTEM_RAM: return SuperFamicom::cpu.wram;
 	}
-
-	fseek(file, 0, SEEK_END);
-	long size = ftell(file);
-	fseek(file, 0, SEEK_SET);
-
-	char* buffer = (char*)malloc(size);
-	if (!buffer) {
-		fclose(file);
-		return NULL;
-	}
-
-	size_t read_size = fread(buffer, 1, size, file);
-	fclose(file);
-
-	if (read_size == size) {
-		return buffer;
-	} else {
-		free(buffer);
-		return NULL;
-	}
+	return nullptr;
 }
 
 size_t retro_get_memory_size(unsigned id) {
-	struct stat st;
-	if (stat(program->save_path, &st) == 0) {
-		return st.st_size;
+	if (!emulator->loaded()) return 0;
+	switch (id) {
+		case RETRO_MEMORY_SAVE_RAM:   return getSaveRam().second;
+		case RETRO_MEMORY_SYSTEM_RAM: return sizeof(SuperFamicom::cpu.wram);
 	}
 	return 0;
 }
 
-const char* retro_store_save_path() {
-	auto suffix = Location::suffix(program->base_name);
-	auto base = Location::base(program->base_name.transform("\\", "/"));
-
-	const char *save = nullptr;
-	if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &save) && save)
-		program->save_path = { string(save).transform("\\", "/"), "/", base.trimRight(suffix, 1L), ".srm" };
-	else
-		program->save_path = { program->base_name.trimRight(suffix, 1L), ".srm" };
-
-	return program->save_path;
-}
-
-void retro_load_external_save(const retro_game_info *game, void* data, size_t size) {
-	program->base_name = string(game->path);
-	retro_store_save_path();
-	FILE* file = fopen(program->save_path, "wb");
-	if (file) {
-		fwrite(data, 1, size, file);
-		fclose(file);
-	}
-}
-
 bool retro_has_save_changed() {
-	void* current_save = retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);
-	if (!current_save) {
-		return false;
-	}
+	uint8_t* current = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_SAVE_RAM);
+	size_t current_size = retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);
+	if (!current || !current_size) return false;
 
-	static char* previous_save = nullptr;
+	static uint8_t* previous = nullptr;
 	static size_t previous_size = 0;
 
-	long current_size = retro_get_memory_size(RETRO_MEMORY_SAVE_RAM);
-	bool has_changed = true;
-	if (previous_save && previous_size == current_size) {
-		has_changed = memcmp(previous_save, current_save, current_size) != 0;
-	}
-
+	bool has_changed = (current_size != previous_size) || memcmp(previous, current, current_size) != 0;
 	if (has_changed) {
-		free(previous_save);
-		previous_save = (char*)malloc(current_size);
-		memcpy(previous_save, current_save, current_size);
+		free(previous);
+		previous = (uint8_t*)malloc(current_size);
+		memcpy(previous, current, current_size);
 		previous_size = current_size;
 	}
-
-	free(current_save);
 	return has_changed;
 }
