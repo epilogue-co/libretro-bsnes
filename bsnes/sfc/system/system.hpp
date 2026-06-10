@@ -7,6 +7,9 @@ struct System {
   inline auto apuFrequency() const -> double { return information.apuFrequency; }
 
   inline auto fastPPU() const -> bool { return hacks.fastPPU; }
+  //precomputed at power() via serializeInit; lets frontends query savestate size without
+  //serializing (System::serialize(true) runs the machine to a sync point as a side effect)
+  inline auto serializeSize(bool synchronize) const -> uint { return information.serializeSize[synchronize]; }
 
   auto run() -> void;
   auto runToSave() -> void;

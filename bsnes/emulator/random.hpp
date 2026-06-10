@@ -15,7 +15,10 @@ struct Random {
   }
 
   auto seed(maybe<uint32> seed = nothing, maybe<uint32> sequence = nothing) -> void {
-    if(!seed) seed = (uint32)clock();
+    //Entropy::None promises a fully deterministic machine, but _state is serialized even though
+    //random() never consumes it — a clock() seed leaks host entropy into every savestate (breaks
+    //byte-identical cold-boot states across processes, e.g. netplay determinism gates)
+    if(!seed) seed = _entropy == Entropy::None ? 0 : (uint32)clock();
     if(!sequence) sequence = 0;
 
     _state = 0;

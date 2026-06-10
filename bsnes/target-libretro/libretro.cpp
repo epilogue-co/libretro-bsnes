@@ -835,6 +835,14 @@ void retro_run()
 
 size_t retro_serialize_size()
 {
+	//Return the precomputed sync-mode size (constant per power-on, set by System::power via
+	//serializeInit) WITHOUT serializing: emulator->serialize() with synchronize=true runs the
+	//machine forward to a thread sync point (System::runToSave), so a size query would perturb
+	//the simulation trajectory — netplay queries the size at session start, a standalone run
+	//only at the end, and that one displaced runToSave is enough to diverge otherwise
+	//deterministic peers from a no-netplay baseline.
+	if (SuperFamicom::system.serializeSize(true))
+		return SuperFamicom::system.serializeSize(true);
 	return emulator->serialize().size();
 }
 
@@ -848,6 +856,31 @@ bool retro_unserialize(const void *data, size_t size)
 {
 	serializer s(static_cast<const uint8_t *>(data), size);
 	return emulator->unserialize(s);
+}
+
+// Private (non-standard) Playback exports: side-effect-free savestates for netplay rollback.
+// retro_serialize uses synchronize=true, which runs the emulated machine forward to a thread
+// sync point (System::runToSave) — calling it every frame perturbs the simulation trajectory
+// relative to a run that never serializes. serialize(0) captures the live libco thread stacks
+// instead (the same mode bsnes's own runahead uses): a pure read, no emulation. The blob embeds
+// raw coroutine stacks (absolute pointers), so it is SAME-PROCESS ONLY — never ship it to a
+// peer; cross-instance transfers must keep retro_serialize. retro_unserialize loads both
+// formats (the mode flag is in the blob header).
+// extern "C" is explicit because these symbols are not declared in libretro.h's extern "C"
+// block — without it the definitions would get C++ mangling and QLibrary::resolve would fail.
+extern "C" RETRO_API size_t retro_playback_serialize_nosync_size()
+{
+	if (!co_serializable()) return 0;  //libco backend can't snapshot contexts: caller falls back
+	return emulator->serialize(0).size();
+}
+
+extern "C" RETRO_API bool retro_playback_serialize_nosync(void *data, size_t size)
+{
+	if (!co_serializable()) return false;
+	auto s = emulator->serialize(0);
+	if (s.size() == 0 || s.size() > size) return false;
+	memcpy(data, s.data(), s.size());
+	return true;
 }
 
 void retro_cheat_reset()
