@@ -134,6 +134,7 @@ auto EpsonRTC::synchronize(uint64 timestamp) -> void {
 
   weekday = timeinfo->tm_wday;
 
+  batteryfailure = 0;  //valid host time is available: the clock is running, no battery fault
   resync = true;  //alert program that time has changed
 }
 

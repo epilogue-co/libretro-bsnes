@@ -640,6 +640,11 @@ auto Cartridge::loadEpsonRTC(Markup::Node node) -> void {
       }
     }
   }
+
+  //No Operator/hardware RTC read-back yet: back the clock with host wall-time so the
+  //cartridge sees a running clock (clears battery-failure) instead of dropping into its
+  //SPC7110 self-check / "power cycle" diagnostic. Tracks real time as the battery would.
+  epsonrtc.synchronize(chrono::timestamp());
 }
 
 //rtc(manufacturer=Sharp)
