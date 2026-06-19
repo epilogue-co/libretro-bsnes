@@ -41,7 +41,14 @@ namespace nall {
 
 namespace std {
   #if INTMAX_BITS >= 128
+  #if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Winvalid-specialization"
+  #endif
   template<> struct is_signed<int128_t> : true_type {};
   template<> struct is_unsigned<uint128_t> : true_type {};
+  #if defined(__clang__)
+  #pragma clang diagnostic pop
+  #endif
   #endif
 }
