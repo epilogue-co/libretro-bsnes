@@ -3,6 +3,11 @@ local := false
 openmp := true
 flags += -Wno-narrowing -Wno-multichar -g -fPIC
 
+GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
+ifneq ($(GIT_VERSION)," unknown")
+	flags += -DGIT_VERSION=\"$(GIT_VERSION)\"
+endif
+
 ifeq ($(platform), ios-arm64)
 	flags += -fPIC -miphoneos-version-min=11.0 -Wno-error=implicit-function-declaration -DHAVE_POSIX_MEMALIGN
 	options += -dynamiclib
