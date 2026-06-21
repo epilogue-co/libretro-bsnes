@@ -18,6 +18,9 @@ struct Cx4 {
   static const int16 SinTable[512];
   static const int16 CosTable[512];
 
+  static const double WireFrameCosTable[256];
+  static const double WireFrameSinTable[256];
+
   int16 C4WFXVal, C4WFYVal, C4WFZVal, C4WFX2Val, C4WFY2Val, C4WFDist, C4WFScale;
   int16 C41FXVal, C41FYVal, C41FAngleRes, C41FDist, C41FDistVal;
 

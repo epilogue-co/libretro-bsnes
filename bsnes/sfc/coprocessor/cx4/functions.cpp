@@ -13,22 +13,25 @@ void Cx4::C4TransfWireFrame() {
   double c4x = (double)C4WFXVal;
   double c4y = (double)C4WFYVal;
   double c4z = (double)C4WFZVal - 0x95;
-  double tanval, c4x2, c4y2, c4z2;
+  double cosval, sinval, c4x2, c4y2, c4z2;
 
   //Rotate X
-  tanval = -(double)C4WFX2Val * PI * 2 / 128;
-  c4y2   = c4y * ::cos(tanval) - c4z * ::sin(tanval);
-  c4z2   = c4y * ::sin(tanval) + c4z * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFX2Val & 0xff];
+  sinval = WireFrameSinTable[C4WFX2Val & 0xff];
+  c4y2   = c4y * cosval - c4z * sinval;
+  c4z2   = c4y * sinval + c4z * cosval;
 
   //Rotate Y
-  tanval = -(double)C4WFY2Val * PI * 2 / 128;
-  c4x2   = c4x * ::cos(tanval)  + c4z2 * ::sin(tanval);
-  c4z    = c4x * -::sin(tanval) + c4z2 * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFY2Val & 0xff];
+  sinval = WireFrameSinTable[C4WFY2Val & 0xff];
+  c4x2   = c4x * cosval  + c4z2 * sinval;
+  c4z    = c4x * -sinval + c4z2 * cosval;
 
   //Rotate Z
-  tanval = -(double)C4WFDist * PI * 2 / 128;
-  c4x    = c4x2 * ::cos(tanval) - c4y2 * ::sin(tanval);
-  c4y    = c4x2 * ::sin(tanval) + c4y2 * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFDist & 0xff];
+  sinval = WireFrameSinTable[C4WFDist & 0xff];
+  c4x    = c4x2 * cosval - c4y2 * sinval;
+  c4y    = c4x2 * sinval + c4y2 * cosval;
 
   //Scale
   C4WFXVal = (int16)(c4x * C4WFScale / (0x90 * (c4z + 0x95)) * 0x95);
@@ -56,22 +59,25 @@ void Cx4::C4TransfWireFrame2() {
   double c4x = (double)C4WFXVal;
   double c4y = (double)C4WFYVal;
   double c4z = (double)C4WFZVal;
-  double tanval, c4x2, c4y2, c4z2;
+  double cosval, sinval, c4x2, c4y2, c4z2;
 
   //Rotate X
-  tanval = -(double)C4WFX2Val * PI * 2 / 128;
-  c4y2   = c4y * ::cos(tanval) - c4z * ::sin(tanval);
-  c4z2   = c4y * ::sin(tanval) + c4z * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFX2Val & 0xff];
+  sinval = WireFrameSinTable[C4WFX2Val & 0xff];
+  c4y2   = c4y * cosval - c4z * sinval;
+  c4z2   = c4y * sinval + c4z * cosval;
 
   //Rotate Y
-  tanval = -(double)C4WFY2Val * PI * 2 / 128;
-  c4x2   = c4x * ::cos(tanval)  + c4z2 * ::sin(tanval);
-  c4z    = c4x * -::sin(tanval) + c4z2 * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFY2Val & 0xff];
+  sinval = WireFrameSinTable[C4WFY2Val & 0xff];
+  c4x2   = c4x * cosval  + c4z2 * sinval;
+  c4z    = c4x * -sinval + c4z2 * cosval;
 
   //Rotate Z
-  tanval = -(double)C4WFDist * PI * 2 / 128;
-  c4x    = c4x2 * ::cos(tanval) - c4y2 * ::sin(tanval);
-  c4y    = c4x2 * ::sin(tanval) + c4y2 * ::cos(tanval);
+  cosval = WireFrameCosTable[C4WFDist & 0xff];
+  sinval = WireFrameSinTable[C4WFDist & 0xff];
+  c4x    = c4x2 * cosval - c4y2 * sinval;
+  c4y    = c4x2 * sinval + c4y2 * cosval;
 
   //Scale
   C4WFXVal = (int16)(c4x * C4WFScale / 0x100);
