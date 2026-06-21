@@ -451,6 +451,13 @@ else
    FLAGS += -O0 -g
 endif
 
+# Cross-peer determinism (Playback netplay): forbid FMA contraction and fast-math so the coprocessor
+# float paths (DSP/CX4/SA-1 overclock, MSU1, etc.) produce bit-identical results across compilers and
+# architectures. Default -ffp-contract is compiler/arch-dependent (clang `on`, gcc `fast`), which
+# silently diverges an arm64 build from an x86-64 one. Mirrors the frontend's src/core/CMakeLists.txt
+# strict-math pin. FLAGS feeds both CFLAGS and CXXFLAGS below.
+FLAGS += -ffp-contract=off -fno-fast-math
+
 LDFLAGS += $(fpic) $(SHARED)
 FLAGS += $(fpic) $(NEW_GCC_FLAGS) $(INCFLAGS)
 
