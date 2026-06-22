@@ -175,7 +175,7 @@ jobs:
       - restore_cache:
           name: Restore MSYS2 cache
           keys:
-            - msys2-cache-win-<< pipeline.parameters.msys2-version >>-v1
+            - msys2-cache-win-<< pipeline.parameters.msys2-version >>-v2
       - run:
           name: Setup MSYS2 (mingw64 for core, clang64 for tool)
           shell: bash.exe
@@ -190,9 +190,11 @@ jobs:
             fi
       - save_cache:
           name: Save MSYS2 cache
-          key: msys2-cache-win-<< pipeline.parameters.msys2-version >>-v1
+          key: msys2-cache-win-<< pipeline.parameters.msys2-version >>-v2
           paths:
-            - /c/tools/msys64
+            # Windows-native path: save_cache/restore_cache run as the native agent, NOT inside bash,
+            # so the MSYS2 bash-mount form (/c/tools/msys64) doesn't resolve and the cache saves nothing.
+            - C:\tools\msys64
       - run:
           name: Generate core cache key
           shell: bash.exe
