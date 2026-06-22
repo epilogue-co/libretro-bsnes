@@ -1,0 +1,298 @@
+# CircleCI for the bsnes-libretro core (Playback fork).
+#
+# This pipeline OWNS the core's cross-platform DETERMINISM gate — the same shape as the epilogue-n64
+# pipeline. Each OS builds the libretro core (its Makefile) + the generic hash-trace tool, then writes
+# a per-frame logic hash (XXH3 over SYSTEM_RAM + SAVE_RAM — the regions production netplay compares)
+# over a freely-licensed homebrew ROM. The traces must be byte-identical across arches/toolchains;
+# netplay/rollback depends on it. The hash is renderer-agnostic, so determinism needs NO GPU.
+#
+# The hash-trace tool is the generic `libretro-hashtrace` from the shared `epilogue-co/libretro-ci-tooling`
+# repo (cloned in-job; CircleCI has org access). bsnes carries only the committed homebrew fixture.
+#
+# COVERAGE NOTE: castle-platformer.sfc exercises the 65816 + PPU + SPC700 base path, NOT the
+# SuperFX/SA-1/DSP/CX4 coprocessors (where the cross-arch FP fixes live). Coprocessor determinism is a
+# tracked follow-up (needs a freely-licensed coprocessor homebrew, ~nonexistent in the wild).
+#
+# PUBLIC REPO — no secrets/keys/certs.
+version: 2.1
+
+orbs:
+  win: circleci/windows@5.0
+
+parameters:
+  msys2-version:
+    type: string
+    default: "20240113.0.0"
+  ci-tooling-ref:
+    type: string
+    default: "master"
+
+commands:
+  clone-ci-tooling:
+    description: "Clone the shared determinism harness (generic hash-trace tool + scripts)."
+    steps:
+      - run:
+          name: Clone libretro-ci-tooling
+          shell: bash.exe
+          command: |
+            git clone --depth 1 --branch << pipeline.parameters.ci-tooling-ref >> \
+              git@github.com:epilogue-co/libretro-ci-tooling.git ci-tooling
+
+jobs:
+  # Linux x86-64 / gcc — build + the x86 determinism trace leg.
+  linux-determinism:
+    machine:
+      image: ubuntu-2404:current
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            export DEBIAN_FRONTEND=noninteractive
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends build-essential cmake git
+      - clone-ci-tooling
+      - run:
+          name: Generate core cache key
+          command: git rev-parse HEAD > .core.sha
+      - restore_cache:
+          keys:
+            - bsnes-linux-amd64-{{ checksum ".core.sha" }}-v1
+      - run:
+          name: Build bsnes libretro core (gcc)
+          command: |
+            set -eo pipefail
+            if [ -f "artifacts/bsnes_libretro.so" ]; then
+              echo "core found in cache, skipping build..."
+            else
+              make -j"$(nproc)" PROFILE=balanced
+              mkdir -p artifacts && cp bsnes_libretro.so artifacts/bsnes_libretro.so
+            fi
+      - save_cache:
+          key: bsnes-linux-amd64-{{ checksum ".core.sha" }}-v1
+          paths:
+            - artifacts/bsnes_libretro.so
+      - run:
+          name: Build hash-trace tool
+          command: |
+            set -eo pipefail
+            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build \
+              -DCMAKE_BUILD_TYPE=Release
+            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(nproc)"
+      - run:
+          name: Determinism trace (linux-x86_64-gcc)
+          command: |
+            mkdir -p hash-traces
+            PLAYBACK_HASHTRACE_TOOL="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace" \
+              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/linux-x86_64-gcc.txt \
+              "$(pwd)/artifacts/bsnes_libretro.so" "$(pwd)/determinism/castle-platformer.sfc"
+      - persist_to_workspace:
+          root: hash-traces
+          paths: ["*.txt"]
+      - store_artifacts:
+          path: hash-traces
+          destination: hash-traces
+
+  # macOS universal — two cross-arch legs (native arm64 + Rosetta x86_64). Logic hash only, no GPU.
+  # The universal core + tool let `arch -x86_64` run the whole trace under exact x86 SSE semantics.
+  macos-determinism:
+    macos:
+      xcode: "16.2.0"
+    resource_class: m4pro.medium
+    steps:
+      - checkout
+      - run:
+          name: Install build tools (cmake)
+          command: brew install cmake
+      - run:
+          name: Install Rosetta 2 (x86_64 leg)
+          command: softwareupdate --install-rosetta --agree-to-license
+      - clone-ci-tooling
+      - run:
+          name: Generate core cache key
+          command: git rev-parse HEAD > .core.sha
+      - restore_cache:
+          keys:
+            - bsnes-macos-universal-{{ checksum ".core.sha" }}-v1
+      - run:
+          name: Build bsnes libretro core (universal)
+          command: |
+            set -eo pipefail
+            is_universal() { lipo -archs "$1" 2>/dev/null | grep -q x86_64 && lipo -archs "$1" 2>/dev/null | grep -q arm64; }
+            if [ -f "artifacts/bsnes_libretro.dylib" ] && is_universal artifacts/bsnes_libretro.dylib; then
+              echo "universal core found in cache, skipping build..."
+            else
+              CC="gcc -g -arch arm64 -arch x86_64" CXX="c++ -g -stdlib=libc++ -arch arm64 -arch x86_64" \
+                make -j"$(sysctl -n hw.ncpu)" PROFILE=balanced
+              mkdir -p artifacts && cp bsnes_libretro.dylib artifacts/bsnes_libretro.dylib
+              is_universal artifacts/bsnes_libretro.dylib || { echo "ERROR: core not universal: $(lipo -archs artifacts/bsnes_libretro.dylib)"; exit 1; }
+            fi
+      - save_cache:
+          key: bsnes-macos-universal-{{ checksum ".core.sha" }}-v1
+          paths:
+            - artifacts/bsnes_libretro.dylib
+      - run:
+          name: Build hash-trace tool (universal)
+          command: |
+            set -eo pipefail
+            # Explicit -arch for compile AND link: CMAKE_OSX_ARCHITECTURES alone produced an arm64-only
+            # binary on this CI box (the Rosetta leg then died "Bad CPU type in executable").
+            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64" \
+              -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64" \
+              -DCMAKE_EXE_LINKER_FLAGS="-arch arm64 -arch x86_64"
+            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(sysctl -n hw.ncpu)"
+            archs="$(lipo -archs ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace)"
+            echo "$archs" | grep -qw x86_64 && echo "$archs" | grep -qw arm64 \
+              || { echo "ERROR: hashtrace tool not universal ($archs)"; exit 1; }
+      - run:
+          name: Determinism traces (arm64 + Rosetta x86_64) + in-job compare
+          command: |
+            set -u -o pipefail
+            mkdir -p hash-traces
+            core="$(pwd)/artifacts/bsnes_libretro.dylib"
+            rom="$(pwd)/determinism/castle-platformer.sfc"
+            tool="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace"
+            PLAYBACK_HASHTRACE_TOOL="$tool" \
+              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/macos-arm64-clang.txt "$core" "$rom"
+            printf '#!/bin/bash\nexec arch -x86_64 "%s" "$@"\n' "$tool" > /tmp/hashtrace-x86_64
+            chmod +x /tmp/hashtrace-x86_64
+            PLAYBACK_HASHTRACE_TOOL="/tmp/hashtrace-x86_64" \
+              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/macos-x86_64-rosetta.txt "$core" "$rom"
+            diff hash-traces/macos-arm64-clang.txt hash-traces/macos-x86_64-rosetta.txt \
+              && echo "arm64 vs Rosetta x86_64: traces IDENTICAL" \
+              || { echo "arm64 vs Rosetta x86_64 DIVERGED (host-FPU semantics leak)"; exit 1; }
+      - persist_to_workspace:
+          root: hash-traces
+          paths: ["*.txt"]
+      - store_artifacts:
+          path: hash-traces
+          destination: hash-traces
+
+  # Windows x86-64 — bsnes core built with mingw64 (gcc/libstdc++); the hash-trace tool with clang64
+  # (libc++). Cross-toolchain dlopen of the .dll is C-ABI safe; both runtimes on PATH at trace time.
+  windows-determinism:
+    executor:
+      name: win/default
+      size: large
+      shell: powershell.exe
+    environment:
+      MSYS2_ROOT_BASH: /c/tools/msys64
+      MINGW_PATH: /c/tools/msys64/mingw64
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore MSYS2 cache
+          keys:
+            - msys2-cache-win-<< pipeline.parameters.msys2-version >>-v1
+      - run:
+          name: Setup MSYS2 (mingw64 for core, clang64 for tool)
+          shell: bash.exe
+          command: |
+            if [ ! -d "${MSYS2_ROOT_BASH}" ]; then
+              choco install msys2 --version << pipeline.parameters.msys2-version >> -y
+              ${MSYS2_ROOT_BASH}/msys2_shell.cmd -defterm -no-start -c "pacman --sync --noconfirm \
+                mingw-w64-x86_64-toolchain mingw-w64-clang-x86_64-toolchain mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja"
+            else
+              ${MSYS2_ROOT_BASH}/msys2_shell.cmd -defterm -no-start -c "pacman --sync --noconfirm --needed \
+                mingw-w64-x86_64-toolchain mingw-w64-clang-x86_64-toolchain mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja"
+            fi
+      - save_cache:
+          name: Save MSYS2 cache
+          key: msys2-cache-win-<< pipeline.parameters.msys2-version >>-v1
+          paths:
+            - /c/tools/msys64
+      - clone-ci-tooling
+      - run:
+          name: Generate core cache key
+          shell: bash.exe
+          command: git rev-parse HEAD > .core.sha
+      - restore_cache:
+          keys:
+            - bsnes-win-mingw64-{{ checksum ".core.sha" }}-v1
+      - run:
+          name: Build bsnes libretro core (mingw64)
+          shell: bash.exe
+          command: |
+            set -eo pipefail
+            if [ -f "artifacts/bsnes_libretro.dll" ]; then
+              echo "core found in cache, skipping build..."
+            else
+              export PATH="${MINGW_PATH}/bin:$PATH"
+              "${MINGW_PATH}/bin/mingw32-make.exe" CC="gcc -g -D_GNU_SOURCE" CXX="g++ -g -D_GNU_SOURCE" \
+                platform=win -j"$(nproc)" PROFILE=balanced
+              mkdir -p artifacts && cp bsnes_libretro.dll artifacts/bsnes_libretro.dll
+            fi
+      - save_cache:
+          key: bsnes-win-mingw64-{{ checksum ".core.sha" }}-v1
+          paths:
+            - artifacts/bsnes_libretro.dll
+      - run:
+          name: Build hash-trace tool (clang64)
+          shell: bash.exe
+          command: |
+            set -eo pipefail
+            export PATH="${MINGW_PATH/mingw64/clang64}/bin:$PATH"
+            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build -G Ninja \
+              -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(nproc)"
+      - run:
+          name: Determinism trace (windows-x86_64-clang64)
+          shell: bash.exe
+          command: |
+            # clang64 tool needs clang64/bin (libc++); the mingw-built .dll needs mingw64/bin
+            # (libstdc++/libgcc/libwinpthread). Both on PATH so dlopen + transitive deps resolve.
+            export PATH="${MINGW_PATH/mingw64/clang64}/bin:${MINGW_PATH}/bin:$PATH"
+            mkdir -p hash-traces
+            PLAYBACK_HASHTRACE_TOOL="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace.exe" \
+              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/windows-x86_64-clang64.txt \
+              "$(pwd)/artifacts/bsnes_libretro.dll" "$(pwd)/determinism/castle-platformer.sfc"
+      - persist_to_workspace:
+          root: hash-traces
+          paths: ["*.txt"]
+      - store_artifacts:
+          path: hash-traces
+          destination: hash-traces
+
+  # Cross-platform gate: every per-frame logic-hash trace must be byte-identical. A divergence fails
+  # at the first differing frame, naming both environments.
+  determinism-compare:
+    docker:
+      - image: cimg/base:2024.05
+    steps:
+      - attach_workspace:
+          at: hash-traces
+      - run:
+          name: Compare cross-platform determinism traces
+          command: |
+            cd hash-traces
+            ref="linux-x86_64-gcc.txt"
+            [ -f "$ref" ] || { echo "FAIL: reference trace $ref missing"; exit 1; }
+            fail=0
+            for f in *.txt; do
+              [ "$f" = "$ref" ] && continue
+              if diff -q "$ref" "$f" >/dev/null; then
+                echo "OK  $f == $ref"
+              else
+                echo "DIVERGENT  $f vs $ref (first differing frames):"
+                diff "$ref" "$f" | head -6 || true
+                fail=1
+              fi
+            done
+            [ "$fail" -eq 0 ] && echo "cross-platform determinism: ALL TRACES IDENTICAL" || { echo "cross-platform determinism: DIVERGENCE"; exit 1; }
+      - store_artifacts:
+          path: hash-traces
+
+workflows:
+  determinism:
+    jobs:
+      - linux-determinism
+      - macos-determinism
+      - windows-determinism
+      - determinism-compare:
+          requires:
+            - linux-determinism
+            - macos-determinism
+            - windows-determinism
