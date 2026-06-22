@@ -59,6 +59,9 @@ jobs:
           key: bsnes-linux-amd64-{{ checksum ".core.sha" }}-v1
           paths:
             - artifacts/bsnes_libretro.so
+      - store_artifacts:
+          path: artifacts
+          destination: binaries
       - run:
           name: Build hash-trace tool
           command: |
@@ -115,6 +118,9 @@ jobs:
           key: bsnes-macos-universal-{{ checksum ".core.sha" }}-v1
           paths:
             - artifacts/bsnes_libretro.dylib
+      - store_artifacts:
+          path: artifacts
+          destination: binaries
       - run:
           name: Build hash-trace tool (universal)
           command: |
@@ -211,6 +217,9 @@ jobs:
           key: bsnes-win-mingw64-{{ checksum ".core.sha" }}-v1
           paths:
             - artifacts/bsnes_libretro.dll
+      - store_artifacts:
+          path: artifacts
+          destination: binaries
       - run:
           name: Build hash-trace tool (clang64)
           shell: bash.exe
