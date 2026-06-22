@@ -1,13 +1,14 @@
 # CircleCI for the bsnes-libretro core (Playback fork).
 #
 # This pipeline OWNS the core's cross-platform DETERMINISM gate — the same shape as the epilogue-n64
-# pipeline. Each OS builds the libretro core (its Makefile) + the generic hash-trace tool, then writes
-# a per-frame logic hash (XXH3 over SYSTEM_RAM + SAVE_RAM — the regions production netplay compares)
-# over a freely-licensed homebrew ROM. The traces must be byte-identical across arches/toolchains;
-# netplay/rollback depends on it. The hash is renderer-agnostic, so determinism needs NO GPU.
+# pipeline. Each OS builds the libretro core (its Makefile) + the vendored hash-trace tool
+# (determinism/hashtrace, self-contained — no external repo, no GPU), then writes a per-frame logic
+# hash (XXH3 over SYSTEM_RAM + SAVE_RAM — the regions production netplay compares) over a freely-
+# licensed homebrew ROM. The traces must be byte-identical across arches/toolchains; netplay/rollback
+# depends on it.
 #
-# The hash-trace tool is the generic `libretro-hashtrace` from the shared `epilogue-co/libretro-ci-tooling`
-# repo (cloned in-job; CircleCI has org access). bsnes carries only the committed homebrew fixture.
+# Self-contained like epilogue-n64 (which owns its bench): bsnes carries the tool + the fixture, so
+# the pipeline needs no cross-repo auth (no user key, no fork-PR access surface).
 #
 # COVERAGE NOTE: castle-platformer.sfc exercises the 65816 + PPU + SPC700 base path, NOT the
 # SuperFX/SA-1/DSP/CX4 coprocessors (where the cross-arch FP fixes live). Coprocessor determinism is a
@@ -23,20 +24,6 @@ parameters:
   msys2-version:
     type: string
     default: "20240113.0.0"
-  ci-tooling-ref:
-    type: string
-    default: "master"
-
-commands:
-  clone-ci-tooling:
-    description: "Clone the shared determinism harness (generic hash-trace tool + scripts)."
-    steps:
-      - run:
-          name: Clone libretro-ci-tooling
-          shell: bash.exe
-          command: |
-            git clone --depth 1 --branch << pipeline.parameters.ci-tooling-ref >> \
-              git@github.com:epilogue-co/libretro-ci-tooling.git ci-tooling
 
 jobs:
   # Linux x86-64 / gcc — build + the x86 determinism trace leg.
@@ -52,7 +39,6 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             sudo apt-get update
             sudo apt-get install -y --no-install-recommends build-essential cmake git
-      - clone-ci-tooling
       - run:
           name: Generate core cache key
           command: git rev-parse HEAD > .core.sha
@@ -77,15 +63,13 @@ jobs:
           name: Build hash-trace tool
           command: |
             set -eo pipefail
-            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build \
-              -DCMAKE_BUILD_TYPE=Release
-            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(nproc)"
+            cmake -S determinism/hashtrace -B determinism/hashtrace/build -DCMAKE_BUILD_TYPE=Release
+            cmake --build determinism/hashtrace/build --parallel "$(nproc)"
       - run:
           name: Determinism trace (linux-x86_64-gcc)
           command: |
             mkdir -p hash-traces
-            PLAYBACK_HASHTRACE_TOOL="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace" \
-              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/linux-x86_64-gcc.txt \
+            bash determinism/trace.sh hash-traces/linux-x86_64-gcc.txt \
               "$(pwd)/artifacts/bsnes_libretro.so" "$(pwd)/determinism/castle-platformer.sfc"
       - persist_to_workspace:
           root: hash-traces
@@ -108,7 +92,6 @@ jobs:
       - run:
           name: Install Rosetta 2 (x86_64 leg)
           command: softwareupdate --install-rosetta --agree-to-license
-      - clone-ci-tooling
       - run:
           name: Generate core cache key
           command: git rev-parse HEAD > .core.sha
@@ -138,13 +121,13 @@ jobs:
             set -eo pipefail
             # Explicit -arch for compile AND link: CMAKE_OSX_ARCHITECTURES alone produced an arm64-only
             # binary on this CI box (the Rosetta leg then died "Bad CPU type in executable").
-            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build \
+            cmake -S determinism/hashtrace -B determinism/hashtrace/build \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64" \
               -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64" \
               -DCMAKE_EXE_LINKER_FLAGS="-arch arm64 -arch x86_64"
-            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(sysctl -n hw.ncpu)"
-            archs="$(lipo -archs ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace)"
+            cmake --build determinism/hashtrace/build --parallel "$(sysctl -n hw.ncpu)"
+            archs="$(lipo -archs determinism/hashtrace/build/libretro-hashtrace)"
             echo "$archs" | grep -qw x86_64 && echo "$archs" | grep -qw arm64 \
               || { echo "ERROR: hashtrace tool not universal ($archs)"; exit 1; }
       - run:
@@ -154,13 +137,13 @@ jobs:
             mkdir -p hash-traces
             core="$(pwd)/artifacts/bsnes_libretro.dylib"
             rom="$(pwd)/determinism/castle-platformer.sfc"
-            tool="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace"
-            PLAYBACK_HASHTRACE_TOOL="$tool" \
-              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/macos-arm64-clang.txt "$core" "$rom"
+            tool="$(pwd)/determinism/hashtrace/build/libretro-hashtrace"
+            HASHTRACE_TOOL="$tool" \
+              bash determinism/trace.sh hash-traces/macos-arm64-clang.txt "$core" "$rom"
             printf '#!/bin/bash\nexec arch -x86_64 "%s" "$@"\n' "$tool" > /tmp/hashtrace-x86_64
             chmod +x /tmp/hashtrace-x86_64
-            PLAYBACK_HASHTRACE_TOOL="/tmp/hashtrace-x86_64" \
-              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/macos-x86_64-rosetta.txt "$core" "$rom"
+            HASHTRACE_TOOL="/tmp/hashtrace-x86_64" \
+              bash determinism/trace.sh hash-traces/macos-x86_64-rosetta.txt "$core" "$rom"
             diff hash-traces/macos-arm64-clang.txt hash-traces/macos-x86_64-rosetta.txt \
               && echo "arm64 vs Rosetta x86_64: traces IDENTICAL" \
               || { echo "arm64 vs Rosetta x86_64 DIVERGED (host-FPU semantics leak)"; exit 1; }
@@ -204,7 +187,6 @@ jobs:
           key: msys2-cache-win-<< pipeline.parameters.msys2-version >>-v1
           paths:
             - /c/tools/msys64
-      - clone-ci-tooling
       - run:
           name: Generate core cache key
           shell: bash.exe
@@ -235,9 +217,9 @@ jobs:
           command: |
             set -eo pipefail
             export PATH="${MINGW_PATH/mingw64/clang64}/bin:$PATH"
-            cmake -S ci-tooling/tools/libretro-hashtrace -B ci-tooling/tools/libretro-hashtrace/build -G Ninja \
+            cmake -S determinism/hashtrace -B determinism/hashtrace/build -G Ninja \
               -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-            cmake --build ci-tooling/tools/libretro-hashtrace/build --parallel "$(nproc)"
+            cmake --build determinism/hashtrace/build --parallel "$(nproc)"
       - run:
           name: Determinism trace (windows-x86_64-clang64)
           shell: bash.exe
@@ -246,8 +228,8 @@ jobs:
             # (libstdc++/libgcc/libwinpthread). Both on PATH so dlopen + transitive deps resolve.
             export PATH="${MINGW_PATH/mingw64/clang64}/bin:${MINGW_PATH}/bin:$PATH"
             mkdir -p hash-traces
-            PLAYBACK_HASHTRACE_TOOL="$(pwd)/ci-tooling/tools/libretro-hashtrace/build/libretro-hashtrace.exe" \
-              bash ci-tooling/scripts/ci-hash-trace-core.sh hash-traces/windows-x86_64-clang64.txt \
+            HASHTRACE_TOOL="$(pwd)/determinism/hashtrace/build/libretro-hashtrace.exe" \
+              bash determinism/trace.sh hash-traces/windows-x86_64-clang64.txt \
               "$(pwd)/artifacts/bsnes_libretro.dll" "$(pwd)/determinism/castle-platformer.sfc"
       - persist_to_workspace:
           root: hash-traces
