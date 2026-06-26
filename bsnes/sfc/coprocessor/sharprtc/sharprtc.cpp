@@ -55,7 +55,16 @@ auto SharpRTC::synchronize(uint64 timestamp) -> void {
   hour = timeinfo->tm_hour;
   day = timeinfo->tm_mday;
   month = 1 + timeinfo->tm_mon;
-  year = 900 + timeinfo->tm_year;
+
+  //The S-RTC year is three BCD digits over an implicit 1000 base (registers 9-11), so it can
+  //only represent 1000-1999. A real year >= 2000 overflows the hundreds digit to an invalid
+  //BCD value (10+) that the games reject. Fold the year back in whole 28-year calendar cycles
+  //into 1972-1999: this keeps the weekday and leap-year pattern identical to the real date
+  //(so calculateWeekday stays consistent) while staying within the chip's range.
+  uint fullyear = 1900 + timeinfo->tm_year;
+  while(fullyear > 1999) fullyear -= 28;
+  year = fullyear - 1000;
+
   weekday = timeinfo->tm_wday;
 }
 

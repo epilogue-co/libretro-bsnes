@@ -97,6 +97,12 @@ auto EpsonRTC::power() -> void {
 }
 
 auto EpsonRTC::synchronize(uint64 timestamp) -> void {
+  //Host-time fallback only: a valid battery-backed clock was already loaded (from the .rtc save
+  //or a frontend RETRO_MEMORY_RTC injection, both of which clear batteryfailure), so DON'T
+  //overwrite it -- doing so loses the persisted backup and fails games' RTC-backup self-checks.
+  //Only seed host time when the cartridge reports a dead battery (fresh boot / no valid backup).
+  if(!batteryfailure) return;
+
   time_t systime = timestamp;
   tm* timeinfo = localtime(&systime);
 

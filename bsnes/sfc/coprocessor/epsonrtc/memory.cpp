@@ -152,10 +152,18 @@ auto EpsonRTC::load(const uint8* data) -> void {
 
   uint64 timestamp = 0;
   for(auto byte : range(8)) {
-    timestamp |= data[8 + byte] << (byte * 8);
+    //cast to uint64 before shifting: data[] is uint8 and promotes to a 32-bit int, so
+    //shifting by 32/40/48/56 (byte >= 4) is undefined behavior that -O3 traps on
+    timestamp |= (uint64)data[8 + byte] << (byte * 8);
   }
 
-  uint64 diff = (uint64)time(0) - timestamp;
+  //a stopped/paused clock doesn't tick, so across power-off it retains its exact value; only a
+  //running clock advances by the elapsed wall time (battery-backed). Advancing a stopped clock
+  //breaks games' RTC-backup retention checks, which stop the clock, store a value, then expect
+  //to read it back byte-identical after a power cycle. Clamp future timestamps (clock skew) to
+  //0 too: an unsigned underflow would spin the advance loops ~10^14 times and hang the emulator.
+  uint64 now = (uint64)time(0);
+  uint64 diff = (stop || pause) ? 0 : (now >= timestamp ? now - timestamp : 0);
   while(diff >= 60 * 60 * 24) { tickDay(); diff -= 60 * 60 * 24; }
   while(diff >= 60 * 60) { tickHour(); diff -= 60 * 60; }
   while(diff >= 60) { tickMinute(); diff -= 60; }
