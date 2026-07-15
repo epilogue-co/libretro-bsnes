@@ -116,6 +116,12 @@ endif
    CC += $(IPHONEMINVER)
    CXX += $(IPHONEMINVER)
 
+# Android (arm64)
+else ifeq ($(platform), android)
+   TARGET := $(TARGET_NAME)_libretro_android.so
+   fpic := -fPIC
+   SHARED := -shared -Wl,--no-undefined -Wl,--version-script=$(CORE_DIR)/bsnes/target-libretro/link.T -Wl,-z,max-page-size=16384
+
 # tvOS
 else ifeq ($(platform), tvos-arm64)
    TARGET := $(TARGET_NAME)_libretro_tvos.dylib
