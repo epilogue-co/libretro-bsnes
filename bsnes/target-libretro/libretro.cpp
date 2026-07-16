@@ -44,6 +44,33 @@ static void (*savedataUpdated)(void*); // callback for automatic save updates
 static int8_t auto_save_timeout = 5; // number of seconds until next automatic save check
 static void set_memory_maps();  // exposes WRAM, SRAM, and SA-1 IRAM to the frontend
 
+// RETRO_MEMORY_RTC exchange buffer: the 16-byte EpsonRTC/SharpRTC save()/load() blob
+// (8 packed register bytes + 8-byte little-endian Unix timestamp). The libretro memory API
+// gives no "frontend finished writing" notification, so a frontend-injected clock is applied
+// on the next retro_run via rtc_inject_pending (same deferred-apply pattern the mGBA core uses).
+static uint8_t rtc_exchange[16];
+static bool rtc_inject_pending = false;
+
+static bool cart_has_rtc() {
+	return SuperFamicom::cartridge.has.EpsonRTC || SuperFamicom::cartridge.has.SharpRTC;
+}
+
+// Serialize the live chip registers into the exchange buffer (read-back path).
+static void rtc_serialize() {
+	if (SuperFamicom::cartridge.has.EpsonRTC) SuperFamicom::epsonrtc.save(rtc_exchange);
+	else if (SuperFamicom::cartridge.has.SharpRTC) SuperFamicom::sharprtc.save(rtc_exchange);
+}
+
+// Apply a frontend-injected blob into the live chip registers. Bytes 8..15 are the timestamp;
+// all-zero means the frontend never wrote the buffer, so the core's own host-time sync stands.
+static void rtc_apply() {
+	bool injected = false;
+	for (int i = 8; i < 16; i++) if (rtc_exchange[i]) { injected = true; break; }
+	if (!injected) return;
+	if (SuperFamicom::cartridge.has.EpsonRTC) SuperFamicom::epsonrtc.load(rtc_exchange);
+	else if (SuperFamicom::cartridge.has.SharpRTC) SuperFamicom::sharprtc.load(rtc_exchange);
+}
+
 static unique_pointer<Emulator::Interface> emulator;
 
 static string sgb_bios;
@@ -807,6 +834,13 @@ static void run_with_runahead(const int frames)
 
 void retro_run()
 {
+	//Apply a frontend-injected RTC clock once, before the first emulated frame reads it
+	//(the frontend memcpy's into the RETRO_MEMORY_RTC buffer after load with no notification).
+	if (rtc_inject_pending) {
+		rtc_apply();
+		rtc_inject_pending = false;
+	}
+
 	input_poll();
 
 	bool updated = false;
@@ -829,7 +863,9 @@ void retro_run()
 	auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_check_time).count();
 	if (elapsed_time >= auto_save_timeout) {
 		last_check_time = current_time;
-		if (retro_has_save_changed()) savedataUpdated(nullptr);
+		//savedataUpdated is null unless the frontend registered SET_SAVE_UPDATED_CALLBACK;
+		//guard the call so cores running under frontends without it don't jump through null
+		if (savedataUpdated && retro_has_save_changed()) savedataUpdated(nullptr);
     }
 }
 
@@ -1015,6 +1051,12 @@ bool retro_load_game(const retro_game_info *game)
 		savedataUpdated = save_updated_cb;
 	}
 
+	//Arm the deferred RTC apply: the frontend injects the cartridge clock into the
+	//RETRO_MEMORY_RTC buffer after this returns; it's applied on the first retro_run.
+	//Left zero (host-time sync from Program::load stands) if the frontend never writes it.
+	memset(rtc_exchange, 0, sizeof(rtc_exchange));
+	rtc_inject_pending = cart_has_rtc();
+
 	set_memory_maps();
 	return true;
 }
@@ -1121,6 +1163,10 @@ void* retro_get_memory_data(unsigned id) {
 	switch (id) {
 		case RETRO_MEMORY_SAVE_RAM:   return getSaveRam().first;
 		case RETRO_MEMORY_SYSTEM_RAM: return SuperFamicom::cpu.wram;
+		case RETRO_MEMORY_RTC:
+			if (!cart_has_rtc()) return nullptr;
+			rtc_serialize();  // hand back the current clock so the frontend can persist it
+			return rtc_exchange;
 	}
 	return nullptr;
 }
@@ -1130,6 +1176,7 @@ size_t retro_get_memory_size(unsigned id) {
 	switch (id) {
 		case RETRO_MEMORY_SAVE_RAM:   return getSaveRam().second;
 		case RETRO_MEMORY_SYSTEM_RAM: return sizeof(SuperFamicom::cpu.wram);
+		case RETRO_MEMORY_RTC:        return cart_has_rtc() ? sizeof(rtc_exchange) : 0;
 	}
 	return 0;
 }

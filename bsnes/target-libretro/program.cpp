@@ -310,6 +310,13 @@ auto Program::load() -> void {
 	}
 
 	emulator->power();
+
+	//Seed the cartridge RTC from host wall-time so RTC carts boot with a running clock instead
+	//of their battery-failure / set-the-clock diagnostic. Routed through the frontend hook (not
+	//the emulation core) so both EpsonRTC and SharpRTC are covered, and so the timestamp can
+	//later be sourced from the Operator device or shared across peers for deterministic netplay.
+	//synchronize() with no argument defaults to chrono::timestamp().
+	if(emulator->rtc()) emulator->synchronize();
 }
 
 auto Program::load(uint id, string name, string type, vector<string> options) -> Emulator::Platform::Load {
